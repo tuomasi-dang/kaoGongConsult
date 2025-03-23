@@ -29,9 +29,17 @@ public class BaokaozhinanServiceImpl extends ServiceImpl<BaokaozhinanDao, Baokao
     
     @Override
 	public PageUtils queryPage(Map<String, Object> params, QueryWrapper<BaokaozhinanEntity> wrapper) {
-        Page<BaokaozhinanEntity> page = baseMapper.selectPage(new Query<BaokaozhinanEntity>(params).getPage(),wrapper);
-        Page<BaokaozhinanView> pageVo = (Page<BaokaozhinanView>)page.convert(BaokaozhinanView::new);
-	    return new PageUtils(pageVo);
+		// 1. 创建分页对象
+		Page<BaokaozhinanEntity> page = new Query<BaokaozhinanEntity>(params).getPage();
+
+		// 2. 执行分页查询
+		page = baseMapper.selectPage(page, wrapper);
+
+		// 3. 将查询结果转换为视图对象（BaokaozhinanView）
+		Page<BaokaozhinanView> pageVo = (Page<BaokaozhinanView>) page.convert(BaokaozhinanView::new);
+
+		// 4. 返回分页工具类
+		return new PageUtils(pageVo);
  	}
     
 	@Override

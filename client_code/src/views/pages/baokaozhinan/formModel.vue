@@ -1,173 +1,241 @@
 <template>
-	<div class="detail-page" :style='{}'>
-        <div class="breadcrumb-wrapper" style="width: 100%;">
-            <div class="bread_view">
-                <el-breadcrumb separator="/" class="breadcrumb">
-                    <el-breadcrumb-item class="first_breadcrumb" :to="{ path: '/' }">首页</el-breadcrumb-item>
-                    <el-breadcrumb-item class="second_breadcrumb" v-for="(item,index) in breadList" :key="index">{{item.name}}</el-breadcrumb-item>
-                </el-breadcrumb>
-            </div>
-            <div class="back_view">
-                <el-button class="back_btn" @click="backClick" type="primary">返回</el-button>
-            </div>
-        </div>
-		<div class="detail_view">
-			<div class="swiper_view">
-				<mySwiper :data="bannerList" :type="3"
-					:loop="false"
-					:navigation="true"
-					:pagination="false"
-					:paginationType="1"
-					:scrollbar="false"
-					:slidesPerView="1"
-					:spaceBetween="20"
-					:autoHeight="false"
-					:centeredSlides="false"
-					:freeMode="false"
-					:effectType="0"
-					:direction="horizontal"
-					:autoplay="false"
-					:slidesPerColumn="1">
-					<template #default="scope">
-						<img :style='{"objectFit":"cover","width":"100%","height":"480px"}' :src="scope.row?$config.url + scope.row:''">
-					</template>
-				</mySwiper>
-			</div>
-			<div class="thumbs_view">
-				<template v-if="!thumbsupOrCrazilyInfo.type">
-					<div class="zan_view" @click="thumbsupOrCrazilyClick(21)">
-						<i class="iconfont icon-thumb-up-line1"></i>
-						<span>赞({{detail.thumbsupNumber}})</span>
-					</div>
-					<div class="zan_view can_view" @click="thumbsupOrCrazilyClick(22)">
-						<i class="iconfont icon-thumb-down-line1"></i>
-						<span>踩({{detail.crazilyNumber}})</span>
-					</div>
-				</template>
-				<template v-else>
-					<div class="zan_view zanActive" v-if="thumbsupOrCrazilyInfo.type==21" @click="cancelThumbsupOrCrazilyClick(21)">
-						<i class="iconfont iconfontActive icon-thumb-up-fill1"></i>
-						<span class="textActive">取消赞({{detail.thumbsupNumber}})</span>
-					</div>
-					<div class="zan_view can_view zanActive" v-else @click="cancelThumbsupOrCrazilyClick(22)">
-						<i class="iconfont iconfontActive icon-thumb-down-fill1"></i>
-						<span class="textActive">取消踩({{detail.crazilyNumber}})</span>
-					</div>
-				</template>
-			</div>
+  <div class="detail-page" :style='{}'>
+    <div class="breadcrumb-wrapper" style="width: 100%;">
+      <div class="bread_view">
+        <el-breadcrumb separator="/" class="breadcrumb">
+          <el-breadcrumb-item class="first_breadcrumb" :to="{ path: '/' }">首页</el-breadcrumb-item>
+          <el-breadcrumb-item class="second_breadcrumb" v-for="(item,index) in breadList" :key="index">{{item.name}}</el-breadcrumb-item>
+        </el-breadcrumb>
+      </div>
+      <div class="back_view">
+        <el-button class="back_btn" @click="backClick" type="primary">返回</el-button>
+      </div>
+    </div>
+    <div class="detail_view">
+      <div class="swiper_view">
+        <mySwiper :data="bannerList" :type="3"
+                  :loop="false"
+                  :navigation="true"
+                  :pagination="false"
+                  :paginationType="1"
+                  :scrollbar="false"
+                  :slidesPerView="1"
+                  :spaceBetween="20"
+                  :autoHeight="false"
+                  :centeredSlides="false"
+                  :freeMode="false"
+                  :effectType="0"
+                  :direction="horizontal"
+                  :autoplay="false"
+                  :slidesPerColumn="1">
 
-			<div class="info_view">
-				<div class="title_view">
-					<div class="detail_title">
-						<span>{{detail.yuanxiao}}</span>
-					</div>
-					<div class="collect_view" v-if="!collectType" @click="collectClick(1)">
-						<i class="iconfont icon-likeline1"></i>
-						<span>收藏</span>
-					</div>
-					<div class="collect_view" v-if="collectType" @click="collectClick(-1)">
-						<i class="iconfont iconfontActive icon-likefill1"></i>
-						<span class="textActive">取消收藏</span>
-					</div>
-				</div>
-				<div class="info_item">
-					<div class="info_label">科目</div>
-					<div  class="info_text" >{{detail.kemu}}</div>
-				</div>
-				<div class="info_item">
-					<div class="info_label">报考条件</div>
-					<div  class="info_text" >{{detail.baokaotiaojian}}</div>
-				</div>
-				<div class="info_item">
-					<div class="info_label">学历条件</div>
-					<div  class="info_text" >{{detail.xuelitiaojian}}</div>
-				</div>
-				<div class="info_item">
-					<div class="info_label">报名时间</div>
-					<div  class="info_text" >{{detail.baomingshijian}}</div>
-				</div>
-				<div class="info_item">
-					<div class="info_label">报名网址</div>
-					<div class="info_link" @click="linkOthers(detail.baomingwangzhi)" >{{detail.baomingwangzhi}}</div>
-				</div>
-				<div class="info_item">
-					<div class="info_label">费用缴纳</div>
-					<div  class="info_text" >{{detail.feiyongjiaona}}</div>
-				</div>
-				<div class="info_item">
-					<div class="info_label">发布时间</div>
-					<div  class="info_text" >{{detail.fabushijian}}</div>
-				</div>
-				<div class="info_item">
-					<div class="info_label">收藏数</div>
-					<div  class="info_text" >{{detail.storeupNumber}}</div>
-				</div>
-				<div class="info_item">
-					<div class="info_label">评论数</div>
-					<div  class="info_text" >{{detail.discussNumber}}</div>
-				</div>
-				<div class="btn_view">
-					<el-button class="edit_btn" v-if="centerType&&btnAuth('baokaozhinan','修改')" type="primary" @click="editClick">修改</el-button>
-					<el-button class="del_btn" v-if="centerType&&btnAuth('baokaozhinan','删除')" type="danger" @click="delClick">删除</el-button>
-				</div>
-			</div>
-		</div>
-		<el-tabs type="border-card" v-model="activeName" class="tabs_view">
-			<el-tab-pane label="详情简介" name="first">
-				<div v-html="detail.xiangqingjianjie"></div>
-			</el-tab-pane>
-			<el-tab-pane label="评论" name="commentActive">
-				<div class="my_comment_view">
-					<el-form ref="commentFormRef" :model="commentForm" class="my_comment_form"
-						:rules="commentRules">
-						<el-form-item prop="content">
-                            <editor :value="commentForm.content" placeholder="善语结善缘,恶语伤人心"
-                                    class="list_editor" @change="contentChange"></editor>
-						</el-form-item>
-					</el-form>
-					<div class="comment_btn">
-						<el-button class="add_btn" type="primary" @click="commentSave">立即评论</el-button>
-						<el-button class="reset_btn" @click="resetForm">重置</el-button>
-					</div>
-				</div>
-				<div class="comment_list">
-					<div class="comment" v-for="(item,index) in commentList" :key="index">
-						<div class="comment_top">
-							<div class="comment_user">
-								<div class="comment_user_img">
-									<img :src="item.avatarurl?$config.url + item.avatarurl:'../../../assets/avatar.png'" alt="">
-								</div>
-								<div class="comment_user_info">
-									{{item.nickname}}
-								</div>
-							</div>
-							<div class="comment_time">{{item.addtime}}</div>
-						</div>
-						<div class="comment_bottom">
-                            <div class="comment_content" v-html="item.content"></div>
-                            <div v-if="item.userid==user.id" class="comment_action">
-                                <span class="del" @click="commentDel(item)" style="cursor: pointer">删除</span>
-                            </div>
-							<div class="comment_reply" v-if="item.reply">
-								回复：<span v-html="item.reply"></span>
-							</div>
-						</div>
-					</div>
-				</div>
-				<el-pagination
-					background
-					:layout="layouts.join(',')"
-					:total="commentTotal"
-					:page-size="commentQuery.limit"
-					prev-text="上一页"
-					next-text="下一页"
-					:hide-on-single-page="false"
-					:style='{}'
-					@size-change="commentSizeChange"
-					@current-change="commentCurrentChange" />
-			</el-tab-pane>
-		</el-tabs>
-	</div>
+        </mySwiper>
+      </div>
+      <div class="thumbs_view">
+        <template v-if="!thumbsupOrCrazilyInfo.type">
+          <div class="zan_view" @click="thumbsupOrCrazilyClick(21)">
+            <i class="iconfont icon-thumb-up-line1"></i>
+            <span>赞({{detail.thumbsupNumber}})</span>
+          </div>
+          <div class="zan_view can_view" @click="thumbsupOrCrazilyClick(22)">
+            <i class="iconfont icon-thumb-down-line1"></i>
+            <span>踩({{detail.crazilyNumber}})</span>
+          </div>
+        </template>
+        <template v-else>
+          <div class="zan_view zanActive" v-if="thumbsupOrCrazilyInfo.type==21" @click="cancelThumbsupOrCrazilyClick(21)">
+            <i class="iconfont iconfontActive icon-thumb-up-fill1"></i>
+            <span class="textActive">取消赞({{detail.thumbsupNumber}})</span>
+          </div>
+          <div class="zan_view can_view zanActive" v-else @click="cancelThumbsupOrCrazilyClick(22)">
+            <i class="iconfont iconfontActive icon-thumb-down-fill1"></i>
+            <span class="textActive">取消踩({{detail.crazilyNumber}})</span>
+          </div>
+        </template>
+      </div>
+
+      <div class="info_view">
+        <div class="title_view">
+          <div class="detail_title">
+            <span>{{detail.yuanxiao}}</span>
+          </div>
+          <div class="collect_view" v-if="!collectType" @click="collectClick(1)">
+            <i class="iconfont icon-likeline1"></i>
+            <span>收藏</span>
+          </div>
+          <div class="collect_view" v-if="collectType" @click="collectClick(-1)">
+            <i class="iconfont iconfontActive icon-likefill1"></i>
+            <span class="textActive">取消收藏</span>
+          </div>
+        </div>
+        <div v-for="(item, index) in infoItems" :key="index" class="info_item">
+          <div class="info_label">{{ item.label }}</div>
+          <el-tooltip :content="item.text" placement="top">
+            <div class="info_text">
+              {{ item.text }}
+            </div>
+          </el-tooltip>
+        </div>
+
+        <div class="info_item">
+          <div class="info_label">报考条件</div>
+          <el-tooltip :content="detail.baokaotiaojian" placement="top">
+            <div class="info_text">{{detail.baokaotiaojian}}</div>
+          </el-tooltip>
+        </div>
+        <div class="info_item">
+          <div class="info_label">学历条件</div>
+          <el-tooltip :content="detail.xuelitiaojian" placement="top">
+            <div class="info_text">{{detail.xuelitiaojian}}</div>
+          </el-tooltip>
+        </div>
+        <div class="info_item">
+          <div class="info_label">报名时间</div>
+          <el-tooltip :content="detail.baomingshijian" placement="top">
+            <div class="info_text">{{detail.baomingshijian}}</div>
+          </el-tooltip>
+        </div>
+        <div class="info_item">
+          <div class="info_label">报名网址</div>
+          <div class="info_link" @click="linkOthers(detail.baomingwangzhi)" >{{detail.baomingwangzhi}}</div>
+        </div>
+        <div class="info_item">
+          <div class="info_label">费用缴纳</div>
+          <el-tooltip :content="detail.feiyongjiaona" placement="top">
+            <div class="info_text">{{detail.feiyongjiaona}}</div>
+          </el-tooltip>
+        </div>
+        <div class="info_item">
+          <div class="info_label">发布时间</div>
+          <el-tooltip :content="detail.fabushijian" placement="top">
+            <div class="info_text">{{detail.fabushijian}}</div>
+          </el-tooltip>
+        </div>
+        <div class="info_item">
+          <div class="info_label">部门名称</div>
+          <el-tooltip :content="detail.bumenmingcheng" placement="top">
+            <div class="info_text">{{detail.bumenmingcheng}}</div>
+          </el-tooltip>
+        </div>
+        <div class="info_item">
+          <div class="info_label">职位代码</div>
+          <el-tooltip :content="detail.zhiweidaima" placement="top">
+            <div class="info_text">{{detail.zhiweidaima}}</div>
+          </el-tooltip>
+        </div>
+        <div class="info_item">
+          <div class="info_label">职位名称</div>
+          <el-tooltip :content="detail.zhiweimingcheng" placement="top">
+            <div class="info_text">{{detail.zhiweimingcheng}}</div>
+          </el-tooltip>
+        </div>
+        <div class="info_item">
+          <div class="info_label">科目类别</div>
+          <el-tooltip :content="detail.kemuleibie" placement="top">
+            <div class="info_text">{{detail.kemuleibie}}</div>
+          </el-tooltip>
+        </div>
+        <div class="info_item">
+          <div class="info_label">招考人数</div>
+          <el-tooltip :content="detail.zhaokaorenshu" placement="top">
+            <div class="info_text">{{detail.zhaokaorenshu}}</div>
+          </el-tooltip>
+        </div>
+        <div class="info_item">
+          <div class="info_label">学历要求</div>
+          <el-tooltip :content="detail.xueliyaoqiu" placement="top">
+            <div class="info_text">{{detail.xueliyaoqiu}}</div>
+          </el-tooltip>
+        </div>
+        <div class="info_item">
+          <div class="info_label">专业要求</div>
+          <el-tooltip :content="detail.zhuanyeyaoqiu" placement="top">
+            <div class="info_text">{{detail.zhuanyeyaoqiu}}</div>
+          </el-tooltip>
+        </div>
+        <div class="info_item">
+          <div class="info_label">政治面貌</div>
+          <el-tooltip :content="detail.zhengzhimianmao" placement="top">
+            <div class="info_text">{{detail.zhengzhimianmao}}</div>
+          </el-tooltip>
+        </div>
+        <div class="info_item">
+          <div class="info_label">咨询电话</div>
+          <el-tooltip :content="detail.zixundianhua" placement="top">
+            <div class="info_text">{{detail.zixundianhua}}</div>
+          </el-tooltip>
+        </div>
+        <div class="info_item">
+          <div class="info_label">其他条件</div>
+            <div class="info_text">敬请关注官网通知...</div>
+        </div>
+        <div class="btn_view">
+          <el-button class="edit_btn" v-if="centerType&&btnAuth('baokaozhinan','修改')" type="primary" @click="editClick">修改</el-button>
+          <el-button class="del_btn" v-if="centerType&&btnAuth('baokaozhinan','删除')" type="danger" @click="delClick">删除</el-button>
+        </div>
+      </div>
+      <!-- 报考详情模块 -->
+      <div class="job_description_view">
+        <div class="job_description_title">报考详情</div>
+        <div class="job_description_content" v-html="detail.xiangqingjianjie"></div>
+      </div>
+    </div>
+    <el-tabs type="border-card" v-model="activeName" class="tabs_view">
+      <el-tab-pane label="详情简介" name="first">
+        <div v-html="detail.xiangqingjianjie"></div>
+      </el-tab-pane>
+      <el-tab-pane label="评论" name="commentActive">
+        <div class="my_comment_view">
+          <el-form ref="commentFormRef" :model="commentForm" class="my_comment_form"
+                   :rules="commentRules">
+            <el-form-item prop="content">
+              <editor :value="commentForm.content" placeholder="善语结善缘,恶语伤人心"
+                      class="list_editor" @change="contentChange"></editor>
+            </el-form-item>
+          </el-form>
+          <div class="comment_btn">
+            <el-button class="add_btn" type="primary" @click="commentSave">立即评论</el-button>
+            <el-button class="reset_btn" @click="resetForm">重置</el-button>
+          </div>
+        </div>
+        <div class="comment_list">
+          <div class="comment" v-for="(item,index) in commentList" :key="index">
+            <div class="comment_top">
+              <div class="comment_user">
+                <div class="comment_user_img">
+                  <img :src="item.avatarurl?$config.url + item.avatarurl:'../../../assets/avatar.png'" alt="">
+                </div>
+                <div class="comment_user_info">
+                  {{item.nickname}}
+                </div>
+              </div>
+              <div class="comment_time">{{item.addtime}}</div>
+            </div>
+            <div class="comment_bottom">
+              <div class="comment_content" v-html="item.content"></div>
+              <div v-if="item.userid==user.id" class="comment_action">
+                <span class="del" @click="commentDel(item)" style="cursor: pointer">删除</span>
+              </div>
+              <div class="comment_reply" v-if="item.reply">
+                回复：<span v-html="item.reply"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <el-pagination
+            background
+            :layout="layouts.join(',')"
+            :total="commentTotal"
+            :page-size="commentQuery.limit"
+            prev-text="上一页"
+            next-text="下一页"
+            :hide-on-single-page="false"
+            :style='{}'
+            @size-change="commentSizeChange"
+            @current-change="commentCurrentChange" />
+      </el-tab-pane>
+    </el-tabs>
+  </div>
 </template>
 <script setup>
 	import axios from 'axios'
@@ -236,7 +304,7 @@
 			method: 'get'
 		}).then(res => {
             bannerList.value = res.data.data.fengmian?res.data.data.fengmian.split(','):[]
-            title.value = res.data.data.yuanxiao
+            title.value = res.data.data.zhiweimingcheng
 			detail.value = res.data.data
 		})
 	}
@@ -313,7 +381,7 @@
 	// 赞踩按钮
 	const thumbsupOrCrazilyClick = (type) => {
 		let params = {
-			name: title.value,
+			name: detail.value.zhiweimingcheng,
 			picture: bannerList.value[0],
 			refid: detail.value.id,
 			type: type,
@@ -676,16 +744,66 @@
 				}
 			}
 
-			.info_item {
+      .info_item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
 
-				.info_label {
-				}
-				.info_text {
-				}
-				.info_link {
-				}
-			}
-			.btn_view {
+        .info_label {
+          flex: 0 0 100px; /* 固定宽度 */
+          font-weight: bold;
+          color: #333;
+        }
+
+        .info_text {
+          flex: 1;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          color: #666;
+          cursor: pointer;
+        }
+
+        .info_text:hover {
+          color: #0076ca;
+        }
+      }
+
+      .detail_view {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 20px; /* 左右模块之间的间距 */
+      }
+
+      .info_view {
+        flex: 1; /* 左侧信息模块占据剩余空间 */
+      }
+
+      .job_description_view {
+        width: 40%; /* 右侧报考详情模块宽度 */
+        padding: 20px;
+        border: 1px solid #eee;
+        border-radius: 4px;
+        background-color: #f9f9f9;
+
+        .job_description_title {
+          font-size: 18px;
+          font-weight: bold;
+          margin-bottom: 10px;
+          color: #333;
+        }
+
+        .job_description_content {
+          font-size: 14px;
+          color: #666;
+          line-height: 1.6;
+        }
+      }
+
+
+      .btn_view {
 				// 修改-按钮
 				.edit_btn {
 				}
@@ -829,4 +947,57 @@
 			}
 		}
 	}
+  .detail-page {
+    padding: 20px;
+  }
+
+  .detail_view {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px; /* 左右模块之间的间距 */
+    margin-top: 20px;
+  }
+
+  .info_view {
+    flex: 1; /* 左侧信息模块占据剩余空间 */
+    max-width: 60%; /* 限制左侧模块宽度 */
+  }
+
+  .job_description_view {
+    width: 40%; /* 右侧报考详情模块宽度 */
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    .job_description_title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 16px;
+      color: #333;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 8px;
+    }
+
+    .job_description_content {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.6;
+
+      /* 富文本内容样式 */
+      p {
+        margin: 8px 0;
+      }
+
+      ul, ol {
+        margin: 8px 0;
+        padding-left: 20px;
+      }
+
+      li {
+        margin: 4px 0;
+      }
+    }
+  }
 </style>

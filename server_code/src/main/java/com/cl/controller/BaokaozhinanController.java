@@ -72,7 +72,7 @@ public class BaokaozhinanController {
                                                                                                                                                                                                                             HttpServletRequest request){
                                     QueryWrapper<BaokaozhinanEntity> ew = new QueryWrapper<BaokaozhinanEntity>();
                                                                                                                                                                                                                                                                                                                                                         
-        
+
         
         PageUtils page = baokaozhinanService.queryPage(params, MPUtil.sort(MPUtil.between(MPUtil.likeOrEq(ew, baokaozhinan), params), params));
         return R.ok().put("data", page);
@@ -91,9 +91,38 @@ public class BaokaozhinanController {
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params,BaokaozhinanEntity baokaozhinan,
 		HttpServletRequest request){
-        QueryWrapper<BaokaozhinanEntity> ew = new QueryWrapper<BaokaozhinanEntity>();
+        QueryWrapper<BaokaozhinanEntity> wrapper = new QueryWrapper<>();
 
-		PageUtils page = baokaozhinanService.queryPage(params, MPUtil.sort(MPUtil.between(MPUtil.likeOrEq(ew, baokaozhinan), params), params));
+        // 动态添加查询条件
+        if (StringUtils.isNotBlank(baokaozhinan.getBumenmingcheng())) {
+            wrapper.like("bumenmingcheng", baokaozhinan.getBumenmingcheng()); // 模糊查询部门名称
+        }
+        if (StringUtils.isNotBlank(baokaozhinan.getZhiweimingcheng())) {
+            wrapper.like("zhiweimingcheng", baokaozhinan.getZhiweimingcheng()); // 模糊查询职位名称
+        }
+        if (StringUtils.isNotBlank(baokaozhinan.getXueliyaoqiu())) {
+            wrapper.eq("xueliyaoqiu", baokaozhinan.getXueliyaoqiu()); // 精确查询学历要求
+        }
+        if (StringUtils.isNotBlank(baokaozhinan.getZhuanyeyaoqiu())) {
+            wrapper.like("zhuanyeyaoqiu", baokaozhinan.getZhuanyeyaoqiu()); // 模糊查询专业要求
+        }
+        if (StringUtils.isNotBlank(baokaozhinan.getZhengzhimianmao())) {
+            wrapper.eq("zhengzhimianmao", baokaozhinan.getZhengzhimianmao()); // 精确查询政治面貌
+        }
+        if (baokaozhinan.getZhaokaorenshu() != null) {
+            wrapper.ge("zhaokaorenshu", baokaozhinan.getZhaokaorenshu()); // 招考人数：大于等于
+        }
+        if (baokaozhinan.getBaomingshijian() != null) {
+            wrapper.ge("baomingshijian", baokaozhinan.getBaomingshijian()); // 报名时间：大于等于
+        }
+        if (baokaozhinan.getFeiyongjiaona() != null) {
+            wrapper.le("feiyongjiaona", baokaozhinan.getFeiyongjiaona()); // 费用缴纳：小于等于
+        }
+
+        // 调用 Service 层的分页查询方法
+        PageUtils page = baokaozhinanService.queryPage(params, wrapper);
+
+        // 返回结果
         return R.ok().put("data", page);
     }
 

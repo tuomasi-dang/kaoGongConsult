@@ -1,613 +1,921 @@
 <template>
-	<div class="list-page" :style='{}'>
-        <div class="breadcrumb-wrapper" style="width: 100%;">
-            <div class="bread_view">
-                <el-breadcrumb separator="/" class="breadcrumb">
-                    <el-breadcrumb-item class="first_breadcrumb" :to="{ path: '/' }">首页</el-breadcrumb-item>
-                    <el-breadcrumb-item class="second_breadcrumb" v-for="(item,index) in breadList" :key="index">{{item.name}}</el-breadcrumb-item>
-                </el-breadcrumb>
+  <div class="list-page" :style='{}'>
+    <div class="breadcrumb-wrapper" style="width: 100%;">
+      <div class="bread_view">
+        <el-breadcrumb separator="/" class="breadcrumb">
+          <el-breadcrumb-item class="first_breadcrumb" :to="{ path: '/' }">首页</el-breadcrumb-item>
+          <el-breadcrumb-item class="second_breadcrumb" v-for="(item,index) in breadList" :key="index">{{ item.name }}
+          </el-breadcrumb-item>
+        </el-breadcrumb>
+      </div>
+      <div class="back_view" v-if="centerType">
+        <el-button class="back_btn" @click="backClick" type="primary">返回</el-button>
+      </div>
+    </div>
+    <!-- 公告栏 -->
+    <div class="notice-wrapper">
+      <div class="notice-bar">
+        <el-alert type="info" :closable="false">
+          <template #title>
+            <!-- 标题 -->
+            <h1 class="bold" style="text-align: center; font-size: 24px; margin: 20px 0">
+              2025年度国家公务员考试公告
+            </h1>
+
+            <!-- 公告内容 -->
+            <div class="notice-content">
+              <p>
+                根据国家公务员局统一部署，2025年度国家公务员考试即将启动。
+                本次招录面向全国，提供多种职位，涵盖中央及地方机关单位，请考生及时关注。
+              </p>
+              <p>
+                报名时间：<strong>10月15日8:00至10月24日18:00</strong>，
+                笔试时间：<strong>11月30日至12月01日</strong>。
+              </p>
+              <p>
+                符合条件的考生可登录国家公务员局官网报名，详细信息请查阅
+                <el-link type="primary" href="http://bm.scs.gov.cn/pp/gkweb/core/web/ui/business/home/gkhome.html"
+                         target="_blank">
+                  《2025年度考试录用公务员公告》
+                </el-link>
+                。
+              </p>
             </div>
-            <div class="back_view" v-if="centerType">
-                <el-button class="back_btn" @click="backClick" type="primary">返回</el-button>
+
+            <!-- 报名链接 -->
+            <div class="notice-link">
+              <p>立即报名：
+                <el-link type="primary" href="http://bm.scs.gov.cn/kl2025" target="_blank">
+                  国家公务员局
+                </el-link>
+              </p>
             </div>
-        </div>
-		<el-form :inline="true" :model="searchQuery" class="list_search">
-			<div class="search_view">
-				<div class="search_label">
-					院校：
-				</div>
-				<div class="search_box">
-					<el-input class="search_inp" v-model="searchQuery.yuanxiao" placeholder="院校"
-						clearable>
-					</el-input>
-				</div>
-			</div>
-			<div class="search_view">
-				<div class="search_label">
-					科目：
-				</div>
-				<div class="search_box">
-					<el-select
-						class="search_sel"
-						clearable
-						v-model="searchQuery.kemu" 
-						placeholder="科目"
-						>
-						<el-option v-for="item in kemuLists" :label="item" :value="item"></el-option>
-					</el-select>
-				</div>
-			</div>
-			<div class="search_btn_view">
-				<el-button class="search_btn" type="primary" @click="searchClick">搜索</el-button>
-				<el-button class="add_btn" type="success" v-if="btnAuth('baokaozhinan','新增')" @click="addClick">新增</el-button>
-			</div>
-		</el-form>
-		<div class="category_view">
-			<div class="category" :class="categoryIndex==-1?'categoryActive':''" @click="categoryClick(-1)">全部
-			</div>
-			<div class="category" :class="categoryIndex==index?'categoryActive':''"
-				v-for="(item,index) in categoryList" :key="index" @click="categoryClick(index)">{{item}}</div>
-		</div>
-        <div class="sort-wrapper">
-            <el-button class="item storeup" @click="sortClick('storeup_number')" :class="{active:sortType=='storeup_number'}">
-                <el-icon class="icon" v-if="sortType!='storeup_number'"><DCaret /></el-icon>
-                <el-icon class="icon desc" v-else-if="sortOrder=='desc'"><SortDown /></el-icon>
-                <el-icon class="icon asc" v-else><SortUp /></el-icon>
-                收藏数
-            </el-button>
-            <el-button class="item thumbsup" @click="sortClick('thumbsup_number')" :class="{active:sortType=='thumbsup_number'}">
-                <el-icon class="icon" v-if="sortType!='thumbsup_number'"><DCaret /></el-icon>
-                <el-icon class="icon desc" v-else-if="sortOrder=='desc'"><SortDown /></el-icon>
-                <el-icon class="icon asc" v-else><SortUp /></el-icon>
-                点赞数
-            </el-button>
-        </div>
-		<div class="page_list">
-			<div class="data_box">
-				<div class="data_view">
-					<div class="data_item" v-for="(item,index) in list" :key="index" @click.stop="detailClick(item.id)" >
-						<div class="data_img_box" v-if="item.fengmian && item.fengmian.substr(0,4)=='http'" @click.stop="preViewClick(item.fengmian)">
-							<el-image class="data_img" :src="item.fengmian" fit="cover"></el-image>
-						</div>
-						<div class="data_img_box" v-else @click.stop="preViewClick($config.url+item.fengmian.split(',')[0])">
-							<el-image class="data_img" :src="item.fengmian?$config.url + item.fengmian.split(',')[0]:''"
-								fit="cover"></el-image>
-						</div>
-						<div class="data_content">
-							<div class="data_title1">
-								<span>院校：{{item.yuanxiao}}</span>
-							</div>
-							<div class="data_title2">
-								<span>科目：{{item.kemu}}</span>
-							</div>
-						</div>
-					</div>
-				</div>
-				<el-pagination
-					background 
-					:layout="layouts.join(',')"
-					:total="total" 
-					:page-size="listQuery.limit"
-                    v-model:current-page="listQuery.page"
-					prev-text="上一页"
-					next-text="下一页"
-					:hide-on-single-page="false"
-					:style='{}'
-					@size-change="sizeChange"
-					@current-change="currentChange"/>
-			</div>
-		</div>
-		<el-dialog v-model="preViewVisible" :title="'查看大图'" width="60%" destroy-on-close>
-			<img :src="preViewUrl" style="width: 100%;" alt="">
-		</el-dialog>
-	</div>
+          </template>
+        </el-alert>
+      </div>
+    </div>
+
+
+    <!-- 搜索区域 -->
+    <el-card class="search-wrapper">
+      <el-form :inline="true" class="search-form">
+        <!-- 第一行 -->
+        <el-row :gutter="20">
+          <el-col :span="6">
+            <el-form-item label="部门名称">
+              <el-input v-model="searchQuery.bumenmingcheng" placeholder="输入部门名称"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="职位名称">
+              <el-input v-model="searchQuery.zhiweimingcheng" placeholder="输入职位名称"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="学历要求">
+              <el-select v-model="searchQuery.xueliyaoqiu" clearable>
+                <el-option label="大专及以上学历" value="大专及以上学历"/>
+                <el-option label="本科及以上学历" value="本科及以上学历"/>
+                <el-option label="硕士及以上学历" value="硕士及以上学历"/>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="专业要求">
+              <el-input v-model="searchQuery.zhuanyeyaoqiu" placeholder="输入专业要求"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <!-- 第二行 -->
+        <el-row :gutter="20">
+          <el-col :span="6">
+            <el-form-item label="政治面貌">
+              <el-select v-model="searchQuery.zhengzhimianmao" clearable>
+                <el-option label="中共党员" value="中共党员"/>
+                <el-option label="共青团员" value="共青团员"/>
+                <el-option label="群众" value="群众"/>
+                <el-option label="不限" value="不限"/>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="招考人数">
+              <el-input-number v-model="searchQuery.zhaokaorenshu" :min="0" placeholder="输入招考人数"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="报名时间">
+              <el-date-picker
+                  v-model="searchQuery.baomingshijian"
+                  type="date"
+                  placeholder="选择报名时间"
+                  value-format="yyyy-MM-dd"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="费用">
+              <el-input-number v-model="searchQuery.feiyongjiaona" :min="0" placeholder="输入费用"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <!-- 查询按钮 -->
+        <el-row>
+          <el-col :span="24" style="text-align: right">
+            <el-button type="primary" @click="searchClick">查询</el-button>
+          </el-col>
+        </el-row>
+      </el-form>
+    </el-card>
+
+
+    <!-- 数据卡片 -->
+    <div class="card-wrapper">
+      <div class="card-container">
+        <el-row :gutter="20">
+          <el-col :span="12" v-for="(item,index) in list" :key="index">
+            <el-card class="position-card" shadow="hover">
+              <template #header>
+                <div class="card-header">
+                  <span class="department">{{ item.bumenmingcheng }}</span>
+                  <el-tag type="danger">招{{ item.zhaokaorenshu }}人</el-tag>
+                </div>
+              </template>
+
+              <div class="card-content">
+                <div class="position-info">
+                  <div>
+                    <el-icon>
+                      <office-building/>
+                    </el-icon>
+                    职位代码：{{ item.zhiweidaima }}
+                  </div>
+                  <div>
+                    <el-icon>
+                      <postcard/>
+                    </el-icon>
+                    职位名称：{{ item.zhiweimingcheng }}
+                  </div>
+                  <div>
+                    <el-icon>
+                      <reading/>
+                    </el-icon>
+                    学历：{{ item.xueliyaoqiu }}
+                  </div>
+                  <div class="professional">
+                    <el-icon>
+                      <tickets/>
+                    </el-icon>
+                    专业要求：{{ item.zhuanyeyaoqiu || '不限' }}
+                  </div>
+                </div>
+
+                <el-divider/>
+
+                <div class="card-footer" style="display: flex; justify-content: space-between; align-items: center;">
+                  <!-- 左侧 查看详情按钮 -->
+                  <el-button type="primary" @click="detailClick(item.id)">查看详情</el-button>
+
+                  <!-- 右侧 咨询电话 -->
+                  <div class="contact" style="display: flex; align-items: center;">
+                    <el-icon style="margin-right: 5px;">
+                      <phone/>
+                    </el-icon>
+                    咨询电话：{{ item.zixundianhua || '暂无' }}
+                  </div>
+                </div>
+
+              </div>
+
+            </el-card>
+          </el-col>
+        </el-row>
+        <el-pagination
+            background
+            :layout="layouts.join(',')"
+            :total="total"
+            :page-size="listQuery.limit"
+            v-model:current-page="listQuery.page"
+            prev-text="上一页"
+            next-text="下一页"
+            :hide-on-single-page="false"
+            :style='{}'
+            @size-change="sizeChange"
+            @current-change="currentChange"/>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
-	import {
-		ref,
-		getCurrentInstance,
-		nextTick,
-        computed,
-	} from 'vue';
-	import {
-		useRoute,
-		useRouter
-	} from 'vue-router';
-    import {
-        useStore
-    } from 'vuex';
-    const store = useStore()
-    const user = computed(()=>store.getters['user/session'])
-	const context = getCurrentInstance()?.appContext.config.globalProperties;
-	const router = useRouter()
-	const route = useRoute()
-	//基础信息
-	const tableName = 'baokaozhinan'
-	const formName = '报考指南'
-	//基础信息
-	const breadList = ref([{
-		name: formName
-	}])
-	const list = ref([])
-	const listQuery = ref({
-		page: 1,
-		limit: Number(12)
-	})
-	const total = ref(0)
-	const listLoading = ref(false)
-	//权限验证
-	const btnAuth = (e,a)=>{
-		if(centerType.value){
-			return context?.$toolUtil.isBackAuth(e,a)
-		}else{
-			return context?.$toolUtil.isAuth(e,a)
-		}
-	}
-	const addClick = () => {
-		router.push('/index/baokaozhinanAdd')
-	}
-	//判断是否从个人中心跳转
-	const centerType = ref(false)
-	//返回
-	const backClick = () => {
-		router.push(`/index/${context?.$toolUtil.storageGet('frontSessionTable')}Center`)
-	}
-	//搜索
-	const searchQuery = ref({})
-	//下拉列表
-	const kemuLists = ref([])
-	const getkemuLists = () => {
-		context?.$http({
-			url: 'option/kemu/kemu',
-			method:'get'
-		}).then(res=>{
-			kemuLists.value = res.data.data
-		})
-	}
-	getkemuLists()
-	const searchClick = () => {
-		listQuery.value.page = 1
-		getList()
-	}
-	//分页
-	const layouts = ref(["total","prev","pager","next","sizes","jumper"])
-	const sizeChange = (size) => {
-		listQuery.value.limit = size
-		getList()
-	}
-	const currentChange = (page) => {
-		listQuery.value.page = page
-		getList()
-	}
-	//分页
-    const sortType = ref('')
-    const sortOrder = ref('')
-    const sortClick = (type)=>{
-        if(sortType.value==type && sortOrder.value=='asc'){
-            sortType.value = ''
-            sortOrder.value = ''
-        }else if(sortType.value==type && sortOrder.value=='desc'){
-            sortOrder.value = 'asc'
-        }else{
-            sortType.value = type
-            sortOrder.value = 'desc'
-        }
-        getList()
-    }
-	//列表
-	const getList = () => {
-		listLoading.value = true
-		let params = JSON.parse(JSON.stringify(listQuery.value))
-		if (categoryIndex.value != -1) {
-			params.kemu = categoryList.value[categoryIndex.value]
-		}
-		if(searchQuery.value.yuanxiao&&searchQuery.value.yuanxiao!=''){
-			params.yuanxiao = '%' + searchQuery.value.yuanxiao + '%'
-		}
-		if(searchQuery.value.kemu&&searchQuery.value.kemu!=''){
-			params.kemu = searchQuery.value.kemu
-		}
-        if(sortType.value){
-            params['sort'] = sortType.value
-            params['order'] = sortOrder.value
-        }
-		context?.$http({
-			url: `${tableName}/${centerType.value?'page':'list'}`,
-			method: 'get',
-			params: params
-		}).then(res => {
-			listLoading.value = false
-			list.value = res.data.data.list
-			total.value = Number(res.data.data.total)
-		})
-	}
-	//分类
-	const categoryList = ref([])
-	const categoryIndex = ref(-1)
-	const getCategoryList = () => {
-		context?.$http({
-			url: 'option/kemu/kemu',
-			method: 'get'
-		}).then(res => {
-			categoryList.value = res.data.data
-		})
-	}
-	const categoryClick = (index) => {
-		listQuery.value.page = 1
-		categoryIndex.value = index
-		getList()
-	}
-	const detailClick = (id) => {
-		router.push(`${tableName}Detail?id=` + id + (centerType.value?'&&centerType=1':''))
-	}
-	//下载文件
-	const download = (file) =>{
-		if(!file){
-			context?.$toolUtil.message('文件不存在','error')
-		}
-		const a = document.createElement('a');
-		a.style.display = 'none';
-		a.setAttribute('target', '_blank');
-		file && a.setAttribute('download', file);
-		a.href = context?.$config.url + file;
-		document.body.appendChild(a);
-		a.click();
-		document.body.removeChild(a);
-	}
-	// 查看大图
-	const preViewUrl = ref('')
-	const preViewVisible = ref(false)
-	const preViewClick = (url) =>{
-		preViewUrl.value = url
-		preViewVisible.value = true
-	}
-	const init = () => {
-		if(route.query.centerType){
-			centerType.value = true
-		}
-		getCategoryList()
-		getList()
-	}
-	init()
+import {
+  ref,
+  getCurrentInstance,
+  nextTick,
+  computed,
+} from 'vue';
+import {
+  useRoute,
+  useRouter
+} from 'vue-router';
+import {
+  useStore
+} from 'vuex';
+
+const store = useStore()
+const user = computed(() => store.getters['user/session'])
+const context = getCurrentInstance()?.appContext.config.globalProperties;
+const router = useRouter()
+const route = useRoute()
+//基础信息
+const tableName = 'baokaozhinan'
+const formName = '报考指南'
+//基础信息
+const breadList = ref([{
+  name: formName
+}])
+const list = ref([])
+const listQuery = ref({
+  page: 1,
+  limit: Number(10)
+})
+const total = ref(0)
+const listLoading = ref(false)
+//权限验证
+const btnAuth = (e, a) => {
+  if (centerType.value) {
+    return context?.$toolUtil.isBackAuth(e, a)
+  } else {
+    return context?.$toolUtil.isAuth(e, a)
+  }
+}
+const addClick = () => {
+  router.push('/index/baokaozhinanAdd')
+}
+//判断是否从个人中心跳转
+const centerType = ref(false)
+//返回
+const backClick = () => {
+  router.push(`/index/${context?.$toolUtil.storageGet('frontSessionTable')}Center`)
+}
+//搜索
+const searchQuery = ref({})
+//下拉列表
+const kemuLists = ref([])
+const getkemuLists = () => {
+  context?.$http({
+    url: 'option/kemu/kemu',
+    method: 'get'
+  }).then(res => {
+    kemuLists.value = res.data.data
+  })
+}
+getkemuLists()
+const searchClick = () => {
+  listQuery.value.page = 1
+  getList()
+}
+//分页
+const layouts = ref(["total", "prev", "pager", "next", "sizes", "jumper"])
+const sizeChange = (size) => {
+  listQuery.value.limit = size
+  getList()
+}
+const currentChange = (page) => {
+  listQuery.value.page = page
+  getList()
+}
+//分页
+const sortType = ref('')
+const sortOrder = ref('')
+const sortClick = (type) => {
+  if (sortType.value == type && sortOrder.value == 'asc') {
+    sortType.value = ''
+    sortOrder.value = ''
+  } else if (sortType.value == type && sortOrder.value == 'desc') {
+    sortOrder.value = 'asc'
+  } else {
+    sortType.value = type
+    sortOrder.value = 'desc'
+  }
+  getList()
+}
+//列表
+const getList = () => {
+  listLoading.value = true
+  // 深拷贝查询条件
+  let params = JSON.parse(JSON.stringify(listQuery.value));
+
+  // 添加动态查询条件
+  if (searchQuery.value.bumenmingcheng) {
+    params.bumenmingcheng = '%' + searchQuery.value.bumenmingcheng + '%'; // 部门名称模糊查询
+  }
+  if (searchQuery.value.zhiweimingcheng) {
+    params.zhiweimingcheng = '%' + searchQuery.value.zhiweimingcheng + '%'; // 职位名称模糊查询
+  }
+  if (searchQuery.value.xueliyaoqiu) {
+    params.xueliyaoqiu = searchQuery.value.xueliyaoqiu; // 学历要求精确查询
+  }
+  if (searchQuery.value.zhuanyeyaoqiu) {
+    params.zhuanyeyaoqiu = '%' + searchQuery.value.zhuanyeyaoqiu + '%'; // 专业要求模糊查询
+  }
+  if (searchQuery.value.zhengzhimianmao) {
+    params.zhengzhimianmao = searchQuery.value.zhengzhimianmao; // 政治面貌精确查询
+  }
+  if (searchQuery.value.zhaokaorenshu) {
+    params.zhaokaorenshu = searchQuery.value.zhaokaorenshu; // 招考人数精确查询
+  }
+  if (searchQuery.value.baomingshijian) {
+    params.baomingshijian = searchQuery.value.baomingshijian; // 报名时间精确查询
+  }
+  if (searchQuery.value.feiyongjiaona) {
+    params.feiyongjiaona = searchQuery.value.feiyongjiaona; // 费用缴纳精确查询
+  }
+  if (sortType.value) {
+    params['sort'] = sortType.value
+    params['order'] = sortOrder.value
+  }
+  context?.$http({
+    url: `${tableName}/${centerType.value ? 'page' : 'list'}`,
+    method: 'get',
+    params: params
+  }).then(res => {
+    listLoading.value = false
+    list.value = res.data.data.list
+    total.value = Number(res.data.data.total)
+  })
+}
+//分类
+const categoryList = ref([])
+const categoryIndex = ref(-1)
+const getCategoryList = () => {
+  context?.$http({
+    url: 'option/kemu/kemu',
+    method: 'get'
+  }).then(res => {
+    categoryList.value = res.data.data
+  })
+}
+const categoryClick = (index) => {
+  listQuery.value.page = 1
+  categoryIndex.value = index
+  getList()
+}
+const detailClick = (id) => {
+  router.push(`${tableName}Detail?id=` + id + (centerType.value ? '&&centerType=1' : ''))
+}
+//下载文件
+const download = (file) => {
+  if (!file) {
+    context?.$toolUtil.message('文件不存在', 'error')
+  }
+  const a = document.createElement('a');
+  a.style.display = 'none';
+  a.setAttribute('target', '_blank');
+  file && a.setAttribute('download', file);
+  a.href = context?.$config.url + file;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+// 查看大图
+const preViewUrl = ref('')
+const preViewVisible = ref(false)
+const preViewClick = (url) => {
+  preViewUrl.value = url
+  preViewVisible.value = true
+}
+const init = () => {
+  if (route.query.centerType) {
+    centerType.value = true
+  }
+  getCategoryList()
+  getList()
+}
+init()
 </script>
 <style lang="scss" scoped>
-	// 返回盒子
-	.back_view {
-		border-radius: 4px;
-		padding: 10px 0px;
-		margin: 10px auto;
-		background: none;
-		width: 100%;
-		text-align: right;
-		// 返回按钮
-		.back_btn {
-			border: 1px solid #0076ca50;
-			cursor: pointer;
-			border-radius: 4px;
-			padding: 0 24px;
-			color: #0076ca;
-			background: #fff;
-			width: auto;
-			font-size: 14px;
-			height: 34px;
-		}
-		// 返回按钮-悬浮
-		.back_btn:hover {
-		}
-	}
-	.bread_view {
-		:deep(.breadcrumb) {
-			.el-breadcrumb__separator {
-			}
-			.first_breadcrumb {
-				.el-breadcrumb__inner {
-				}
-			}
-			.second_breadcrumb {
-				.el-breadcrumb__inner {
-				}
-			}
-		}
-	}
-	// 分类盒子
-	.category_view {
-		// 分类item
-		.category {
-		}
-		// item-悬浮
-		.category:hover {
-		}
-		// item-选中
-		.categoryActive {
-		}
-	}
 
-	//搜索
-	.list_search {
-		.search_view {
-			.search_label {
-			}
-			.search_box {
-				// 输入框
-				:deep(.search_inp) {
-					.is-focus {
-						box-shadow: none !important;
-					}
-				}
-				// 下拉框
-				:deep(.search_sel) {
-					//去掉默认样式
-					.select-trigger{
-						height: 100%;
-						.el-input{
-							height: 100%;
-							.is-focus {
-								box-shadow: none !important;
-							}
-						}
-					}
-				}
-			}
-		}
-		.search_btn_view {
-			// 搜索按钮
-			.search_btn {
-			}
-			// 搜索按钮-悬浮
-			.search_btn:hover {
-			}
-			// 新增按钮
-			.add_btn {
-			}
-			// 新增按钮-悬浮
-			.add_btn:hover {
-			}
-		}
-	}
+/* 新增布局容器样式 */
+.notice-wrapper,
+.search-wrapper {
+  margin-bottom: 20px;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
 
-	// 数据盒子
-	.page_list {
-		//列表
-		.data_box {
-			.data_view {
-				.data_item:nth-of-type(2n - 1) {
-					// 图片盒子
-					.data_img_box {
-						width: 100%;
-						// 图片
-						.data_img {
-							object-fit: cover;
-							width: 100%;
-							height: 100%;
-						}
-					}
-					// 内容盒子
-					.data_content {
-						// 价格
-						.data_price {
-							color: #f00;
-						}
-						// 标题1
-						.data_title1 {
-							margin: 0 0 10px;
-							width: 100%;
-							text-align: center;
-						}
-						// 标题2
-						.data_title2 {
-							margin: 0 0 10px;
-							width: 100%;
-							text-align: center;
-						}
-						// 标题3
-						.data_title3 {
-							margin: 0 0 10px;
-							width: 100%;
-							text-align: center;
-						}
-						// 标题4
-						.data_title4 {
-							margin: 0 0 10px;
-							width: 100%;
-							text-align: center;
-						}
-						// 标题5
-						.data_title5 {
-							margin: 0 0 10px;
-							width: 100%;
-							text-align: center;
-						}
-					}
-				}
-				.data_item:nth-of-type(2n) {
-					// 图片盒子
-					.data_img_box {
-						width: 100%;
-						// 图片
-						.data_img {
-							object-fit: cover;
-							width: 100%;
-							height: 100%;
-						}
-					}
-					// 内容盒子
-					.data_content {
-						// 价格
-						.data_price {
-							color: #f00;
-						}
-						// 标题1
-						.data_title1 {
-							margin: 0 0 10px;
-							width: 100%;
-							text-align: center;
-						}
-						// 标题2
-						.data_title2 {
-							margin: 0 0 10px;
-							width: 100%;
-							text-align: center;
-						}
-						// 标题3
-						.data_title3 {
-							margin: 0 0 10px;
-							width: 100%;
-							text-align: center;
-						}
-						// 标题4
-						.data_title4 {
-							margin: 0 0 10px;
-							width: 100%;
-							text-align: center;
-						}
-						// 标题5
-						.data_title5 {
-							margin: 0 0 10px;
-							width: 100%;
-							text-align: center;
-						}
-					}
-				}
-				.data_item:nth-of-type(2n - 1):hover {
-					// 图片盒子
-					.data_img_box {
-						// 图片
-						.data_img {
-						}
-					}
-					// 内容盒子
-					.data_content {
-						// 价格
-						.data_price {
-						}
-						// 标题1
-						.data_title1 {
-						}
-						// 标题2
-						.data_title2 {
-						}
-						// 标题3
-						.data_title3 {
-						}
-						// 标题4
-						.data_title4 {
-						}
-						// 标题5
-						.data_title5 {
-						}
-					}
-				}
-				.data_item:nth-of-type(2n):hover {
-					// 图片盒子
-					.data_img_box {
-						// 图片
-						.data_img {
-						}
-					}
-					// 内容盒子
-					.data_content {
-						// 价格
-						.data_price {
-						}
-						// 标题1
-						.data_title1 {
-						}
-						// 标题2
-						.data_title2 {
-						}
-						// 标题3
-						.data_title3 {
-						}
-						// 标题4
-						.data_title4 {
-						}
-						// 标题5
-						.data_title5 {
-						}
-					}
-				}
-			}
-		}
-	}
 
-	// 分页器
-	.el-pagination {
-		// 总页码
-		:deep(.el-pagination__total) {
-		}
-		// 上一页
-		:deep(.btn-prev) {
-		}
-		// 下一页
-		:deep(.btn-next) {
-		}
-		// 上一页禁用
-		:deep(.btn-prev:disabled) {
-		}
-		// 下一页禁用
-		:deep(.btn-next:disabled) {
-		}
-		// 页码
-		:deep(.el-pager) {
-			// 数字
-			.number {
-			}
-			// 数字悬浮
-			.number:hover {
-			}
-			// 选中
-			.number.is-active {
-			}
-		}
-		// sizes
-		:deep(.el-pagination__sizes) {
-			.el-select {
-				//去掉默认样式
-				.select-trigger{
-					height: 100%;
-					.el-input{
-						height: 100%;
-						.is-focus {
-							box-shadow: none !important;
-						}
-					}
-				}
-			}
-		}
-		// 跳页
-		:deep(.el-pagination__jump) {
-			// 输入框
-			.el-input {
-				.is-focus {
-					box-shadow: none !important;
-				}
-			}
-		}
-	}
-	
-	// 热门信息盒子
-	.hot_view {
-		// 标题
-		.hot_title {
-		}
+.search-form {
+  width: 100%;
+}
 
-		.hot_list {
-			// item
-			.hot {
-				//图片盒子
-				.hot_img_view {
-					// 图片
-					.hot_img {
-					}
-				}
-				// 内容盒子
-				.hot_content {
-					// 名称
-					.hot_text {
-					}
-				}
-			}
-		}
-	}
+.el-row {
+  margin-bottom: 20px;
+}
+
+.el-row:last-child {
+  margin-bottom: 0;
+}
+
+.el-col {
+  padding: 0 10px;
+}
+
+.el-form-item {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.el-input,
+.el-select,
+.el-date-picker,
+.el-input-number {
+  width: 100%;
+}
+
+.card-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* 公告栏优化 */
+.notice-bar {
+  :deep(.el-alert) {
+    text-align: center;
+    padding: 18px 24px;
+
+    .el-alert__title {
+      font-size: 16px;
+      line-height: 1.8;
+    }
+  }
+}
+
+/* 搜索表单居中 */
+.search-form {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+
+  :deep(.el-form-item) {
+    margin: 0;
+
+    .el-input__wrapper {
+      width: 220px;
+    }
+  }
+}
+
+/* 卡片容器优化 */
+.card-wrapper {
+  .card-container {
+    margin: 0 -10px;
+
+    .el-col {
+      padding: 0 10px !important;
+      margin-bottom: 20px;
+
+      @media (max-width: 992px) {
+        width: 50%;
+        max-width: 50%;
+        flex: 0 0 50%;
+      }
+
+      @media (max-width: 768px) {
+        width: 100%;
+        max-width: 100%;
+        flex: 0 0 100%;
+      }
+    }
+  }
+}
+
+/* 卡片样式优化 */
+.position-card {
+  height: 100%;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+
+  :deep(.el-card__header) {
+    padding: 16px 20px;
+  }
+
+  :deep(.el-card__body) {
+    padding: 20px;
+  }
+}
+
+/* 调整信息排版 */
+.position-info {
+  div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .el-icon {
+      font-size: 18px;
+      color: #909399;
+    }
+  }
+}
+
+/* 底部按钮优化 */
+.card-footer {
+  .el-button {
+    padding: 8px 16px;
+  }
+}
+
+// 分类盒子
+.category_view {
+  // 分类item
+  .category {
+  }
+
+  // item-悬浮
+  .category:hover {
+  }
+
+  // item-选中
+  .categoryActive {
+  }
+}
+
+//搜索
+.list_search {
+  .search_view {
+    .search_label {
+    }
+
+    .search_box {
+      // 输入框
+      :deep(.search_inp) {
+        .is-focus {
+          box-shadow: none !important;
+        }
+      }
+
+      // 下拉框
+      :deep(.search_sel) {
+        //去掉默认样式
+        .select-trigger {
+          height: 100%;
+
+          .el-input {
+            height: 100%;
+
+            .is-focus {
+              box-shadow: none !important;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .search_btn_view {
+    // 搜索按钮
+    .search_btn {
+    }
+
+    // 搜索按钮-悬浮
+    .search_btn:hover {
+    }
+
+    // 新增按钮
+    .add_btn {
+    }
+
+    // 新增按钮-悬浮
+    .add_btn:hover {
+    }
+  }
+}
+
+// 数据盒子
+.page_list {
+  //列表
+  .data_box {
+    .data_view {
+      .data_item:nth-of-type(2n - 1) {
+        // 图片盒子
+        .data_img_box {
+          width: 100%;
+          // 图片
+          .data_img {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+          }
+        }
+
+        // 内容盒子
+        .data_content {
+          // 价格
+          .data_price {
+            color: #f00;
+          }
+
+          // 标题1
+          .data_title1 {
+            margin: 0 0 10px;
+            width: 100%;
+            text-align: center;
+          }
+
+          // 标题2
+          .data_title2 {
+            margin: 0 0 10px;
+            width: 100%;
+            text-align: center;
+          }
+
+          // 标题3
+          .data_title3 {
+            margin: 0 0 10px;
+            width: 100%;
+            text-align: center;
+          }
+
+          // 标题4
+          .data_title4 {
+            margin: 0 0 10px;
+            width: 100%;
+            text-align: center;
+          }
+
+          // 标题5
+          .data_title5 {
+            margin: 0 0 10px;
+            width: 100%;
+            text-align: center;
+          }
+        }
+      }
+
+      .data_item:nth-of-type(2n) {
+        // 图片盒子
+        .data_img_box {
+          width: 100%;
+          // 图片
+          .data_img {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+          }
+        }
+
+        // 内容盒子
+        .data_content {
+          // 价格
+          .data_price {
+            color: #f00;
+          }
+
+          // 标题1
+          .data_title1 {
+            margin: 0 0 10px;
+            width: 100%;
+            text-align: center;
+          }
+
+          // 标题2
+          .data_title2 {
+            margin: 0 0 10px;
+            width: 100%;
+            text-align: center;
+          }
+
+          // 标题3
+          .data_title3 {
+            margin: 0 0 10px;
+            width: 100%;
+            text-align: center;
+          }
+
+          // 标题4
+          .data_title4 {
+            margin: 0 0 10px;
+            width: 100%;
+            text-align: center;
+          }
+
+          // 标题5
+          .data_title5 {
+            margin: 0 0 10px;
+            width: 100%;
+            text-align: center;
+          }
+        }
+      }
+
+      .data_item:nth-of-type(2n - 1):hover {
+        // 图片盒子
+        .data_img_box {
+          // 图片
+          .data_img {
+          }
+        }
+
+        // 内容盒子
+        .data_content {
+          // 价格
+          .data_price {
+          }
+
+          // 标题1
+          .data_title1 {
+          }
+
+          // 标题2
+          .data_title2 {
+          }
+
+          // 标题3
+          .data_title3 {
+          }
+
+          // 标题4
+          .data_title4 {
+          }
+
+          // 标题5
+          .data_title5 {
+          }
+        }
+      }
+
+      .data_item:nth-of-type(2n):hover {
+        // 图片盒子
+        .data_img_box {
+          // 图片
+          .data_img {
+          }
+        }
+
+        // 内容盒子
+        .data_content {
+          // 价格
+          .data_price {
+          }
+
+          // 标题1
+          .data_title1 {
+          }
+
+          // 标题2
+          .data_title2 {
+          }
+
+          // 标题3
+          .data_title3 {
+          }
+
+          // 标题4
+          .data_title4 {
+          }
+
+          // 标题5
+          .data_title5 {
+          }
+        }
+      }
+    }
+  }
+}
+
+// 分页器
+.el-pagination {
+  // 总页码
+  :deep(.el-pagination__total) {
+  }
+
+  // 上一页
+  :deep(.btn-prev) {
+  }
+
+  // 下一页
+  :deep(.btn-next) {
+  }
+
+  // 上一页禁用
+  :deep(.btn-prev:disabled) {
+  }
+
+  // 下一页禁用
+  :deep(.btn-next:disabled) {
+  }
+
+  // 页码
+  :deep(.el-pager) {
+    // 数字
+    .number {
+    }
+
+    // 数字悬浮
+    .number:hover {
+    }
+
+    // 选中
+    .number.is-active {
+    }
+  }
+
+  // sizes
+  :deep(.el-pagination__sizes) {
+    .el-select {
+      //去掉默认样式
+      .select-trigger {
+        height: 100%;
+
+        .el-input {
+          height: 100%;
+
+          .is-focus {
+            box-shadow: none !important;
+          }
+        }
+      }
+    }
+  }
+
+  // 跳页
+  :deep(.el-pagination__jump) {
+    // 输入框
+    .el-input {
+      .is-focus {
+        box-shadow: none !important;
+      }
+    }
+  }
+}
+
+// 热门信息盒子
+.hot_view {
+  // 标题
+  .hot_title {
+  }
+
+  .hot_list {
+    // item
+    .hot {
+      //图片盒子
+      .hot_img_view {
+        // 图片
+        .hot_img {
+        }
+      }
+
+      // 内容盒子
+      .hot_content {
+        // 名称
+        .hot_text {
+        }
+      }
+    }
+  }
+}
+
+/* 公告内容样式 */
+.notice-content {
+  margin: 16px 0;
+  line-height: 1.8;
+  color: #606266;
+}
+
+.notice-content p {
+  margin: 8px 0;
+}
+
+/* 报名链接样式 */
+.notice-link {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.notice-link .el-link {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.bread_view {
+  :deep(.breadcrumb) {
+    .el-breadcrumb__separator {
+    }
+
+    .first_breadcrumb {
+      .el-breadcrumb__inner {
+      }
+    }
+
+    .second_breadcrumb {
+      .el-breadcrumb__inner {
+      }
+    }
+  }
+}
 </style>
