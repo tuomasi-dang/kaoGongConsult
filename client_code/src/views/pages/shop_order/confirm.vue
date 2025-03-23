@@ -215,7 +215,7 @@
                     context.$http.post('orders/update',res.data.data.list[0])
                 })
             })
-            //如果存在id。说明从购物车跳转,需要删除已下单的商品
+            //如果存在id。说明从购物中心跳转,需要删除已下单的商品
             list.value.forEach(item=>{
                 if(item.id){
                     context.$http({url:'cart/delete',method:'post',data:[item.id]})

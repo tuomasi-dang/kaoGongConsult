@@ -105,7 +105,7 @@
 				<div class="btn_view">
 					<el-input-number class="inputNumber" v-model="buyNumber" :min="1" v-if="detail.alllimittimes"></el-input-number>
                     <div class="break"></div>
-					<el-button class="addCart_btn" v-if="detail.alllimittimes" type="primary" @click="addCart">加入购物车</el-button>
+					<el-button class="addCart_btn" v-if="detail.alllimittimes" type="primary" @click="addCart">加入购物中心</el-button>
 					<el-button class="buyNow_btn" v-if="detail.alllimittimes" type="primary" @click="buyNow">立即购买</el-button>
 				</div>
 				<div class="btn_view">
@@ -547,7 +547,7 @@
 	const resetForm = () => {
 		commentFormRef.value.resetFields()
 	}
-	//查找是否已添加购物车
+	//查找是否已添加购物中心
 	const isInCart = ref(false)
 	const getInCartList = () => {
 		context?.$http({url:'cart/list',method:'get',params:{userid:context?.$toolUtil.storageGet('userid'),tablename:tableName,goodid: detail.value.id}}).then(res=>{
@@ -578,7 +578,7 @@
 			return false
 		}
 		if(isInCart.value){
-			context?.$toolUtil.message('该商品已在购物车，请前往购买','error')
+			context?.$toolUtil.message('该商品已在购物中心，请前往购买','error')
 			return false
 		}
 		cartForm.value.buynumber = buyNumber.value
@@ -790,7 +790,7 @@
 						}
 					}
 				}
-				// 加入购物车-按钮
+				// 加入购物中心-按钮
 				.addCart_btn {
 				}
 				// 悬浮

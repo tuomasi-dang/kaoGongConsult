@@ -21,7 +21,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 
 
 /**
- * 购物车
+ * 购物中心
  * 数据库通用操作实体类（普通增删改查）
  * @author 
  * @email 

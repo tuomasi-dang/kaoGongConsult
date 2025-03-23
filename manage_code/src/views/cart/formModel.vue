@@ -93,7 +93,7 @@
 	const emit = defineEmits(['formModelChange'])
 	//基础信息
 	const tableName = 'cart'
-	const formName = '购物车'
+	const formName = '购物中心'
 	//基础信息
 	//form表单
 	const form = ref({})

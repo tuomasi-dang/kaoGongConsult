@@ -27,13 +27,13 @@ const config = {
 					]
 				},
 				{
-					name: '购物车管理',
+					name: '考公资料管理',
 					icon: '',
 					child:[
 
 						{
-							name:'购物车',
-							url:'/index/cartList'
+							name:'考公资料',
+							url:'/index/kaoyanziliaoList'
 						},
 					]
 				},
@@ -49,13 +49,13 @@ const config = {
 					]
 				},
 				{
-					name: '考公资料管理',
+					name: '购物中心管理',
 					icon: '',
 					child:[
 
 						{
-							name:'考公资料',
-							url:'/index/kaoyanziliaoList'
+							name:'购物中心',
+							url:'/index/cartList'
 						},
 					]
 				},

@@ -75,7 +75,7 @@
 	const route = useRoute()
 	//基础信息
 	const tableName = 'cart'
-	const formName = '购物车'
+	const formName = '购物中心'
 	const table = ref(null)
 	const selRows = ref([])
 	const list = ref([])
@@ -116,7 +116,7 @@
 			table.value.toggleRowSelection(row)
 		})
 	}
-	//移除购物车
+	//移除购物中心
 	const delClick = (id = null) => {
 		if (id) {
 			ElMessageBox.confirm(`是否删除选中${formName}`, '提示', {

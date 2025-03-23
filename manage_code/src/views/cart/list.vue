@@ -165,7 +165,7 @@
 	//基础信息
 
 	const tableName = 'cart'
-	const formName = '购物车'
+	const formName = '购物中心'
 	const route = useRoute()
 	//基础信息
 	onMounted(()=>{

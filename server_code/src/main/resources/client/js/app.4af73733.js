@@ -4615,7 +4615,7 @@
                                 e.data.data.list.length ? R.value = !0 : R.value = !1
                             }))
                         }, Z = (0, m.iH)({userid: t?.$toolUtil.storageGet("userid")}),
-                        Y = () => _.value.onelimittimes > 0 && _.value.onelimittimes < L.value ? (t?.$toolUtil.message(`每人只能购买${_.value.onelimittimes}件商品`, "error"), !1) : _.value.alllimittimes <= 0 ? (t?.$toolUtil.message("商品售罄", "error"), !1) : _.value.alllimittimes > 0 && _.value.alllimittimes < L.value ? (t?.$toolUtil.message("库存不足", "error"), !1) : R.value ? (t?.$toolUtil.message("该商品已在购物车，请前往购买", "error"), !1) : (Z.value.buynumber = L.value, Z.value.goodid = _.value.id, Z.value.goodname = h.value, Z.value.tablename = n, Z.value.picture = f.value[0], Z.value.price = _.value.price, void t?.$http({
+                        Y = () => _.value.onelimittimes > 0 && _.value.onelimittimes < L.value ? (t?.$toolUtil.message(`每人只能购买${_.value.onelimittimes}件商品`, "error"), !1) : _.value.alllimittimes <= 0 ? (t?.$toolUtil.message("商品售罄", "error"), !1) : _.value.alllimittimes > 0 && _.value.alllimittimes < L.value ? (t?.$toolUtil.message("库存不足", "error"), !1) : R.value ? (t?.$toolUtil.message("该商品已在购物中心，请前往购买", "error"), !1) : (Z.value.buynumber = L.value, Z.value.goodid = _.value.id, Z.value.goodname = h.value, Z.value.tablename = n, Z.value.picture = f.value[0], Z.value.price = _.value.price, void t?.$http({
                             url: "cart/save",
                             method: "post",
                             data: Z.value
@@ -4743,7 +4743,7 @@
                             type: "primary",
                             onClick: Y
                         }, {
-                            default: (0, i.w5)((() => [(0, i.Uk)("加入购物车")])),
+                            default: (0, i.w5)((() => [(0, i.Uk)("加入购物中心")])),
                             _: 1
                         })) : (0, i.kq)("", !0), _.value.alllimittimes ? ((0, i.wg)(), (0, i.j4)(o, {
                             key: 2,
@@ -5157,7 +5157,7 @@
                 __name: "cart", setup(e) {
                     const a = (0, g.oR)(),
                         l = ((0, i.Fl)((() => a.getters["user/session"])), (0, i.FN)()?.appContext.config.globalProperties),
-                        s = (0, c.tv)(), o = ((0, c.yj)(), "购物车"), n = (0, m.iH)(null), r = (0, m.iH)([]),
+                        s = (0, c.tv)(), o = ((0, c.yj)(), "购物中心"), n = (0, m.iH)(null), r = (0, m.iH)([]),
                         u = (0, m.iH)([]), d = (0, m.iH)(!1),
                         v = (0, m.iH)({page: 1, limit: 20, userid: l?.$toolUtil.storageGet("userid")}), f = () => {
                             d.value = !0, l?.$http({url: "cart/list", method: "get", params: v.value}).then((e => {
@@ -6672,9 +6672,9 @@
                             icon: "",
                             child: [{name: "论坛交流", url: "/index/forumList"}]
                         }, {
-                            name: "购物车管理",
+                            name: "购物中心管理",
                             icon: "",
-                            child: [{name: "购物车", url: "/index/cartList"}]
+                            child: [{name: "购物中心", url: "/index/cartList"}]
                         }, {
                             name: "新闻资讯管理",
                             icon: "",

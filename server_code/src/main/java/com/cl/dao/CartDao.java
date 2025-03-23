@@ -12,7 +12,7 @@ import com.cl.entity.view.CartView;
 
 
 /**
- * 购物车
+ * 购物中心
  * 
  * @author 
  * @email 

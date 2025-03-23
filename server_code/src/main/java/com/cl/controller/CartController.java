@@ -42,7 +42,7 @@ import com.cl.utils.CommonUtil;
 import java.io.IOException;
 
 /**
- * 购物车
+ * 购物中心
  * 后端接口
  * @author 
  * @email 
@@ -114,7 +114,7 @@ public class CartController {
         QueryWrapper< CartEntity> ew = new QueryWrapper< CartEntity>();
  		ew.allEq(MPUtil.allEQMapPre( cart, "cart"));
 		CartView cartView =  cartService.selectView(ew);
-		return R.ok("查询购物车成功").put("data", cartView);
+		return R.ok("查询购物中心成功").put("data", cartView);
     }
 
     /**

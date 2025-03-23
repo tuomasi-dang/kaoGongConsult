@@ -848,7 +848,7 @@ init()
   font-size: 16px;
 }
 
-/* 购物车 */
+/* 购物中心 */
 .index_top .index_top_right .cart {
   margin-right: 10px;
   font-size: 16px;
