@@ -57,7 +57,7 @@
       <div class="info_view">
         <div class="title_view">
           <div class="detail_title">
-            <span>{{detail.yuanxiao}}</span>
+<!--            <span>{{detail.yuanxiao}}</span>-->
           </div>
           <div class="collect_view" v-if="!collectType" @click="collectClick(1)">
             <i class="iconfont icon-likeline1"></i>

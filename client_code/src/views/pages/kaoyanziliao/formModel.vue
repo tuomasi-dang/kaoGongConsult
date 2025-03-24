@@ -102,12 +102,14 @@
 					<div class="info_label">评论数</div>
 					<div  class="info_text" >{{detail.discussNumber}}</div>
 				</div>
-				<div class="btn_view">
+<!--				<div class="btn_view">-->
+        <br>
 					<el-input-number class="inputNumber" v-model="buyNumber" :min="1" v-if="detail.alllimittimes"></el-input-number>
                     <div class="break"></div>
+        <br>
 					<el-button class="addCart_btn" v-if="detail.alllimittimes" type="primary" @click="addCart">加入购物中心</el-button>
 					<el-button class="buyNow_btn" v-if="detail.alllimittimes" type="primary" @click="buyNow">立即购买</el-button>
-				</div>
+<!--				</div>-->
 				<div class="btn_view">
 					<el-button class="edit_btn" v-if="centerType&&btnAuth('kaoyanziliao','修改')" type="primary" @click="editClick">修改</el-button>
 					<el-button class="del_btn" v-if="centerType&&btnAuth('kaoyanziliao','删除')" type="danger" @click="delClick">删除</el-button>
@@ -239,7 +241,7 @@
 		}).then(res => {
             bannerList.value = res.data.data.fengmian?res.data.data.fengmian.split(','):[]
             title.value = res.data.data.ziliaomingcheng
-			detail.value = res.data.data
+			detail.value = res.data.data;
 			getInCartList();
 		})
 	}

@@ -46,48 +46,65 @@
 				</div>
 			</div>
 			<!-- 报考指南首页展示 -->
-			<div class="homeList_view">
-				<div class="homeList_title">
-                    <span>报考指南展示</span>
+      <div class="homeList_view">
+        <div class="homeList_title">
+          <el-icon class="title-icon"><Notification /></el-icon>
+          <span>报考指南</span>
+          <div class="title-decoration"></div>
+        </div>
+        <div class="home_list_two">
+          <mySwiper
+              :data="baokaozhinanHomeList"
+              :type="3"
+              :loop="false"
+              :navigation="true"
+              :pagination="false"
+              :scrollbar="false"
+              :slidesPerView="3"
+              :spaceBetween="30"
+              :autoHeight="false"
+              :effectType="0"
+              :autoplay="false">
+            <template #default="scope">
+              <div class="home_item card-hover" @click="detailClick('baokaozhinan',scope.row.id)">
+                <div class="card-header">
+                  <el-tag class="recruit-tag" effect="dark">
+                    <el-icon><UserFilled /></el-icon>
+                    招{{ scope.row.zhaokaorenshu }}人
+                  </el-tag>
+                  <div class="position-code">
+                    <el-icon><Discount /></el-icon>
+                    {{ scope.row.zhiweidaima }}
+                  </div>
                 </div>
-				<div class="home_list_two">
-					<mySwiper :data="baokaozhinanHomeList" :type="3"
-						:loop="false"
-						:navigation="true"
-						:pagination="false"
-						:paginationType="1"
-						:scrollbar="false"
-						:slidesPerView="2"
-						:spaceBetween="10"
-						:autoHeight="false"
-						:centeredSlides="false"
-						:freeMode="false"
-						:effectType="0"
-						:direction="horizontal"
-						:autoplay="false"
-						:slidesPerColumn="2">
-						<template #default="scope">
-							<div class="home_item animation_box" @click="detailClick('baokaozhinan',scope.row.id)">
-								<div class="home_img_box">
-									<img class="home_img" v-if="isHttp(scope.row.fengmian)" :src="scope.row.fengmian.split(',')[0]" alt="">
-									<img class="home_img" v-else :src="scope.row.fengmian?$config.url + scope.row.fengmian.split(',')[0]:''" alt="">
-								</div>
-								<div class="home_content">
-									<div class='home_title'>
-										院校：{{scope.row.yuanxiao}}
-									</div>
-									<div class='home_title'>
-										科目：{{scope.row.kemu}}
-									</div>
-								</div>
-							</div>
-						</template>
-					</mySwiper>
-				</div>
-				<div class="homeList_more_view" @click="moreClick('baokaozhinan')">
-					<span class="homeList_more_text">更多</span>
-				</div>
-			</div>
+                <div class="home_content">
+                  <div class="department">
+                    <el-icon class="icon"><OfficeBuilding /></el-icon>
+                    <span class="text">{{ scope.row.bumenmingcheng }}</span>
+                  </div>
+                  <h3 class="position-title">{{ scope.row.zhiweimingcheng }}</h3>
+                  <div class="position-info">
+                    <div class="info-item">
+                      <el-icon class="icon"><Reading /></el-icon>
+                      <span class="label">学历：</span>
+                      <span class="value">{{ scope.row.xueliyaoqiu || '不限' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <el-icon class="icon"><Histogram /></el-icon>
+                      <span class="label">政治面貌：</span>
+                      <span class="value">{{ scope.row.zhengzhimianmao || '不限' }}</span>
+                    </div>
+                  </div>
+                  <div class="deadline">
+                    <el-icon class="icon"><Clock /></el-icon>
+                    <span class="text">报名截止：{{ scope.row.baomingshijian || '详见公告' }}</span>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </mySwiper>
+        </div>
+      </div>
 			<!-- 考公资讯 -->
 			<div class="newsList_view">
 				<div class="ntitle"> <div class="n2">NEWS INFORMATION</div> <div class="n1">考公资讯</div> </div>
@@ -152,11 +169,6 @@
 			params: params
 		}).then(res => {
 			baokaozhinanHomeList.value = res.data.data.list
-			baokaozhinanHomeList.value.forEach(item=>{
-				if(!isHttp(item.fengmian)){
-					item.imgUrls = item.fengmian.split(',').map(item=>context.$config.url+item)
-				}
-			})
 		})
 	}
 	//考公资料推荐
@@ -392,81 +404,147 @@
 	}
 	// 新闻资讯
 	// 首页展示
-	.homeList_view {
+  .homeList_view {
+    padding: 40px 0;
+    background: linear-gradient(135deg, #f8f9fe 0%, #f1f4ff 100%);
 
-		.homeList_title {
-		}
-		// list
-		.home_list_two {
-			display: flex;
-			width: 100%;
-			flex-wrap: wrap;
-			.home_item {
-				cursor: pointer;
-				margin: 0 10px;
-				background: none;
-				width: 100%;
-				.home_img_box {
-					margin: 0 0 5px;
-					width: 100%;
-					height: 280px;
-					.home_img {
-						border: 1px  solid #eee;
-						object-fit: contain;
-						width: 100%;
-						height: 100%;
-					}
-				}
-				.home_content {
-					background: none;
-					.home_title {
-						overflow: hidden;
-						color: #000;
-						white-space: nowrap;
-						background: none;
-						font-weight: 500;
-						width: 100%;
-						font-size: 15px;
-						line-height: 24px;
-						text-overflow: ellipsis;
-						text-align: center;
-					}
-				}
-			}
-		}
-		// list
-		// animation
-		.animation_box {
-			transform: rotate(0deg) scale(1) skew(0deg, 0deg) translate3d(0px, 0px, 0px);
-			z-index: initial;
-		}
-		.animation_box:hover {
-			transform: rotate(0deg) scale(1) skew(0deg, 0deg) translate3d(0px, 0px, 0px);
-			-webkit-perspective: 1000px;
-			perspective: 1000px;
-			transition: 0.3s;
-		}
-		.animation_box img {
-			transform: rotate(0deg) scale(1) skew(0deg, 0deg) translate3d(0px, 0px, 0px);
-			z-index: initial;
-		}
-		.animation_box img:hover {
-			transform: rotate(0deg) scale(1) skew(0deg, 0deg) translate3d(0px, 0px, 0px);
-			-webkit-perspective: 1000px;
-			perspective: 1000px;
-			transition: 0.3s;
-		}
-		// animation
-		// 更多
-		.homeList_more_view {
-			cursor: pointer;
-			top: 40px;
-			position: absolute;
-			right: calc((100% - 1180px)/2);
-			.homeList_more_text {
-			}
-		}
-	}
+    .homeList_title {
+      position: relative;
+      text-align: center;
+      margin-bottom: 40px;
+
+      .title-icon {
+        font-size: 28px;
+        color: var(--el-color-primary);
+        margin-right: 12px;
+        vertical-align: middle;
+      }
+
+      span {
+        font-size: 24px;
+        font-weight: 600;
+        color: #2c3e50;
+        vertical-align: middle;
+      }
+
+      .title-decoration {
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: var(--el-color-primary);
+        border-radius: 2px;
+      }
+    }
+
+    .home_list_two {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .home_item {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      margin-bottom: 30px;
+
+      &.card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+
+        .position-title {
+          color: var(--el-color-primary);
+        }
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+
+        .recruit-tag {
+          font-size: 14px;
+          padding: 6px 12px;
+          .el-icon {
+            margin-right: 6px;
+          }
+        }
+
+        .position-code {
+          font-size: 13px;
+          color: #666;
+          .el-icon {
+            margin-right: 5px;
+            color: var(--el-color-primary);
+          }
+        }
+      }
+
+      .home_content {
+        .department {
+          display: flex;
+          align-items: center;
+          margin-bottom: 12px;
+          .icon {
+            color: #7e8c9c;
+            margin-right: 8px;
+          }
+          .text {
+            font-size: 15px;
+            color: #4a5568;
+          }
+        }
+
+        .position-title {
+          font-size: 18px;
+          color: #2c3e50;
+          margin: 0 0 15px;
+          transition: color 0.3s;
+        }
+
+        .position-info {
+          .info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 14px;
+            .icon {
+              color: #a0aec0;
+              margin-right: 8px;
+            }
+            .label {
+              color: #718096;
+            }
+            .value {
+              color: #4a5568;
+            }
+          }
+        }
+
+        .deadline {
+          display: flex;
+          align-items: center;
+          margin-top: 15px;
+          padding-top: 15px;
+          border-top: 1px solid #eee;
+          .icon {
+            color: #e53e3e;
+            margin-right: 8px;
+          }
+          .text {
+            font-size: 14px;
+            color: #e53e3e;
+          }
+        }
+      }
+    }
+  }
 	// 首页展示
 </style>
 <style>
