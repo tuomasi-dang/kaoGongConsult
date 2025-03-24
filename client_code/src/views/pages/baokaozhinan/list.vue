@@ -57,76 +57,86 @@
 
 
     <!-- 搜索区域 -->
-    <el-card class="search-wrapper">
+    <!-- 优化后的搜索区域 -->
+    <el-card class="search-wrapper modern-search">
       <el-form :inline="true" class="search-form">
-        <!-- 第一行 -->
         <el-row :gutter="20">
-          <el-col :span="6">
-            <el-form-item label="部门名称">
-              <el-input v-model="searchQuery.bumenmingcheng" placeholder="输入部门名称"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="职位名称">
-              <el-input v-model="searchQuery.zhiweimingcheng" placeholder="输入职位名称"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="学历要求">
-              <el-select v-model="searchQuery.xueliyaoqiu" clearable>
-                <el-option label="大专及以上学历" value="大专及以上学历"/>
-                <el-option label="本科及以上学历" value="本科及以上学历"/>
-                <el-option label="硕士及以上学历" value="硕士及以上学历"/>
+          <!-- 配置化搜索字段 -->
+          <el-col :xs="24" :sm="12" :md="8" :lg="6" v-for="(field, index) in searchFields" :key="index">
+            <el-form-item :label="field.label + '：'" class="modern-form-item">
+              <!-- 输入框 -->
+              <el-input
+                  v-if="field.type === 'input'"
+                  v-model="searchQuery[field.prop]"
+                  :placeholder="field.placeholder"
+                  clearable
+                  class="modern-input"
+              >
+                <template #suffix>
+                  <el-icon class="search-clear" @click="handleClear(field.prop)">
+                    <CloseBold />
+                  </el-icon>
+                </template>
+              </el-input>
+
+              <!-- 下拉选择 -->
+              <el-select
+                  v-if="field.type === 'select'"
+                  v-model="searchQuery[field.prop]"
+                  :placeholder="field.placeholder"
+                  clearable
+                  class="modern-select"
+              >
+                <el-option
+                    v-for="opt in field.options"
+                    :key="opt.value"
+                    :label="opt.label"
+                    :value="opt.value"
+                />
               </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="专业要求">
-              <el-input v-model="searchQuery.zhuanyeyaoqiu" placeholder="输入专业要求"/>
+
+              <!-- 日期选择 -->
+              <div v-if="field.type === 'date'" class="date-picker-wrapper">
+                <el-date-picker
+                    v-model="searchQuery[field.prop]"
+                    type="date"
+                    :placeholder="field.placeholder"
+                    value-format="YYYY-MM-DD"
+                    class="modern-date"
+                />
+                <el-icon class="date-clear" @click="handleClear(field.prop)">
+                  <CloseBold />
+                </el-icon>
+              </div>
+
+              <!-- 数字输入 -->
+              <div v-if="field.type === 'number'" class="number-input-wrapper">
+                <el-input-number
+                    v-model="searchQuery[field.prop]"
+                    :min="0"
+                    :placeholder="field.placeholder"
+                    controls-position="right"
+                    class="modern-number"
+                />
+                <el-icon class="number-clear" @click="handleClear(field.prop)">
+                  <CloseBold />
+                </el-icon>
+              </div>
             </el-form-item>
           </el-col>
         </el-row>
 
-        <!-- 第二行 -->
-        <el-row :gutter="20">
-          <el-col :span="6">
-            <el-form-item label="政治面貌">
-              <el-select v-model="searchQuery.zhengzhimianmao" clearable>
-                <el-option label="中共党员" value="中共党员"/>
-                <el-option label="共青团员" value="共青团员"/>
-                <el-option label="群众" value="群众"/>
-                <el-option label="不限" value="不限"/>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="招考人数">
-              <el-input-number v-model="searchQuery.zhaokaorenshu" :min="0" placeholder="输入招考人数"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="报名时间">
-              <el-date-picker
-                  v-model="searchQuery.baomingshijian"
-                  type="date"
-                  placeholder="选择报名时间"
-                  value-format="yyyy-MM-dd"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="费用">
-              <el-input-number v-model="searchQuery.feiyongjiaona" :min="0" placeholder="输入费用"/>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <!-- 查询按钮 -->
-        <el-row>
-          <el-col :span="24" style="text-align: right">
-            <el-button type="primary" @click="searchClick">查询</el-button>
-          </el-col>
-        </el-row>
+        <!-- 操作按钮 -->
+        <div class="action-buttons">
+          <el-button type="primary" @click="handleSearch" class="search-btn">
+            <el-icon><Search /></el-icon>
+            搜索
+          </el-button>
+          <el-button @click="handleReset" class="reset-btn">
+            <el-icon><Refresh /></el-icon>
+            重置条件
+          </el-button>
+        </div>
       </el-form>
     </el-card>
 
@@ -210,6 +220,98 @@
 </template>
 
 <script setup>
+import { Search, Refresh, CloseBold } from '@element-plus/icons-vue'
+
+// 搜索字段配置化
+const searchFields = [
+  {
+    label: '部门名称',
+    prop: 'bumenmingcheng',
+    type: 'input',
+    placeholder: '输入部门名称'
+  },
+  {
+    label: '职位名称',
+    prop: 'zhiweimingcheng',
+    type: 'input',
+    placeholder: '输入职位名称'
+  },
+  {
+    label: '学历要求',
+    prop: 'xueliyaoqiu',
+    type: 'select',
+    placeholder: '选择学历',
+    options: [
+      { label: '大专及以上学历', value: '大专及以上学历' },
+      { label: '本科及以上学历', value: '本科及以上学历' },
+      { label: '硕士及以上学历', value: '硕士及以上学历' }
+    ]
+  },
+  {
+    label: '专业要求',
+    prop: 'zhuanyeyaoqiu',
+    type: 'input',
+    placeholder: '输入专业要求'
+  },
+  {
+    label: '政治面貌',
+    prop: 'zhengzhimianmao',
+    type: 'select',
+    placeholder: '选择政治面貌',
+    options: [
+      { label: '中共党员', value: '中共党员' },
+      { label: '共青团员', value: '共青团员' },
+      { label: '群众', value: '群众' },
+      { label: '不限', value: '不限' }
+    ]
+  },
+  {
+    label: '招考人数',
+    prop: 'zhaokaorenshu',
+    type: 'number',
+    placeholder: '输入人数'
+  },
+  {
+    label: '报名时间',
+    prop: 'baomingshijian',
+    type: 'date',
+    placeholder: '选择日期'
+  },
+  {
+    label: '报名费用',
+    prop: 'feiyongjiaona',
+    type: 'number',
+    placeholder: '输入金额'
+  }
+]
+// 清空处理
+const handleClear = (prop) => {
+  if (prop === 'zhaokaorenshu' || prop === 'feiyongjiaona') {
+    searchQuery.value[prop] = 0
+  } else {
+    searchQuery.value[prop] = ''
+  }
+}
+
+// 搜索操作
+const handleSearch = () => {
+  getList()
+}
+
+// 重置操作
+const handleReset = () => {
+  searchQuery.value = {
+    bumenmingcheng: '',
+    zhiweimingcheng: '',
+    xueliyaoqiu: '',
+    zhuanyeyaoqiu: '',
+    zhengzhimianmao: '',
+    zhaokaorenshu: 0,
+    baomingshijian: '',
+    feiyongjiaona: 0
+  }
+  getList()
+}
 import {
   ref,
   getCurrentInstance,
@@ -397,19 +499,130 @@ const init = () => {
 init()
 </script>
 <style lang="scss" scoped>
+.modern-search {
+  border-radius: 12px;
+  border: 1px solid #e4e7ed;
+  background: #f8f9fa;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+
+  .search-form {
+    padding: 16px;
+  }
+}
+
+.modern-form-item {
+  :deep(.el-form-item__label) {
+    color: #409eff;
+    font-weight: 600;
+    padding-right: 8px;
+  }
+}
+
+.modern-input {
+  :deep(.el-input__wrapper) {
+    border-radius: 8px;
+    transition: all 0.3s;
+    background: #fff;
+
+    &:hover {
+      box-shadow: 0 0 0 1px #409eff inset;
+    }
+
+    &.is-focus {
+      box-shadow: 0 0 0 2px #409eff inset;
+    }
+  }
+}
+
+.date-picker-wrapper,
+.number-input-wrapper {
+  position: relative;
+  width: 100%;
+
+  .modern-date,
+  .modern-number {
+    width: 100%;
+  }
+
+  .date-clear,
+  .number-clear {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #c0c4cc;
+    z-index: 1;
+
+    &:hover {
+      color: #409eff;
+    }
+  }
+}
+
+.action-buttons {
+  width: 100%;
+  text-align: center;
+  margin-top: 16px;
+
+  .search-btn {
+    background: linear-gradient(135deg, #409eff, #79bbff);
+    border: none;
+    padding: 10px 24px;
+    transition: all 0.3s;
+
+    &:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+  }
+
+  .reset-btn {
+    border-color: #409eff;
+    color: #409eff;
+
+    &:hover {
+      background: #ecf5ff;
+    }
+  }
+}
+
+// 响应式调整
+@media (max-width: 768px) {
+  .modern-form-item {
+    margin-bottom: 12px;
+
+    :deep(.el-form-item__label) {
+      font-size: 13px;
+    }
+  }
+
+  .action-buttons {
+    .el-button {
+      width: 100%;
+      margin-bottom: 8px;
+    }
+  }
+}
 
 /* 新增布局容器样式 */
 .notice-wrapper,
 .search-wrapper {
-  margin-bottom: 20px;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
+.search-form .el-form-item {
+  margin-bottom: 20px;
+}
 
-.search-form {
+.search-form .el-input, .search-form .el-select, .search-form .el-date-picker {
   width: 100%;
+}
+
+.search-form .el-button {
+  padding: 10px;
 }
 
 .el-row {

@@ -3,14 +3,8 @@ package com.cl.controller;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+
 import jakarta.servlet.http.HttpServletRequest;
 
 import com.cl.utils.ValidatorUtils;
@@ -39,15 +33,18 @@ import com.cl.utils.R;
 import com.cl.utils.MPUtil;
 import com.cl.utils.MapUtils;
 import com.cl.utils.CommonUtil;
+
 import java.io.IOException;
+
 import com.cl.service.StoreupService;
 import com.cl.entity.StoreupEntity;
 
 /**
  * 报考指南
  * 后端接口
- * @author 
- * @email 
+ *
+ * @author
+ * @email
  * @date 2024-12-31 14:57:50
  */
 @RestController
@@ -60,37 +57,26 @@ public class BaokaozhinanController {
     private StoreupService storeupService;
 
 
-
-
-
-
     /**
      * 后台列表
      */
     @RequestMapping("/page")
-    public R page(@RequestParam Map<String, Object> params,BaokaozhinanEntity baokaozhinan,
-                                                                                                                                                                                                                            HttpServletRequest request){
-                                    QueryWrapper<BaokaozhinanEntity> ew = new QueryWrapper<BaokaozhinanEntity>();
-                                                                                                                                                                                                                                                                                                                                                        
+    public R page(@RequestParam Map<String, Object> params, BaokaozhinanEntity baokaozhinan,
+                  HttpServletRequest request) {
+        QueryWrapper<BaokaozhinanEntity> ew = new QueryWrapper<BaokaozhinanEntity>();
 
-        
+
         PageUtils page = baokaozhinanService.queryPage(params, MPUtil.sort(MPUtil.between(MPUtil.likeOrEq(ew, baokaozhinan), params), params));
         return R.ok().put("data", page);
     }
 
 
-
-
-
-
-
     /**
      * 前端列表
      */
-	@IgnoreAuth
+    @IgnoreAuth
     @RequestMapping("/list")
-    public R list(@RequestParam Map<String, Object> params,BaokaozhinanEntity baokaozhinan,
-		HttpServletRequest request){
+    public R list(@RequestParam Map<String, Object> params, BaokaozhinanEntity baokaozhinan, HttpServletRequest request) {
         QueryWrapper<BaokaozhinanEntity> wrapper = new QueryWrapper<>();
 
         // 动态添加查询条件
@@ -109,77 +95,74 @@ public class BaokaozhinanController {
         if (StringUtils.isNotBlank(baokaozhinan.getZhengzhimianmao())) {
             wrapper.eq("zhengzhimianmao", baokaozhinan.getZhengzhimianmao()); // 精确查询政治面貌
         }
-        if (baokaozhinan.getZhaokaorenshu() != null) {
+        if (Objects.nonNull(baokaozhinan.getZhaokaorenshu())) {
             wrapper.ge("zhaokaorenshu", baokaozhinan.getZhaokaorenshu()); // 招考人数：大于等于
         }
-        if (baokaozhinan.getBaomingshijian() != null) {
+        if (Objects.nonNull(baokaozhinan.getBaomingshijian())) {
             wrapper.ge("baomingshijian", baokaozhinan.getBaomingshijian()); // 报名时间：大于等于
         }
-        if (baokaozhinan.getFeiyongjiaona() != null) {
+        if (Objects.nonNull(baokaozhinan.getFeiyongjiaona())) {
             wrapper.le("feiyongjiaona", baokaozhinan.getFeiyongjiaona()); // 费用缴纳：小于等于
         }
 
-        // 调用 Service 层的分页查询方法
         PageUtils page = baokaozhinanService.queryPage(params, wrapper);
 
-        // 返回结果
         return R.ok().put("data", page);
     }
 
-	/**
+    /**
      * 列表
      */
     @RequestMapping("/lists")
-    public R list( BaokaozhinanEntity baokaozhinan){
-       	QueryWrapper<BaokaozhinanEntity> ew = new QueryWrapper<BaokaozhinanEntity>();
-      	ew.allEq(MPUtil.allEQMapPre( baokaozhinan, "baokaozhinan"));
+    public R list(BaokaozhinanEntity baokaozhinan) {
+        QueryWrapper<BaokaozhinanEntity> ew = new QueryWrapper<BaokaozhinanEntity>();
+        ew.allEq(MPUtil.allEQMapPre(baokaozhinan, "baokaozhinan"));
         return R.ok().put("data", baokaozhinanService.selectListView(ew));
     }
 
-	 /**
+    /**
      * 查询
      */
     @RequestMapping("/query")
-    public R query(BaokaozhinanEntity baokaozhinan){
-        QueryWrapper< BaokaozhinanEntity> ew = new QueryWrapper< BaokaozhinanEntity>();
- 		ew.allEq(MPUtil.allEQMapPre( baokaozhinan, "baokaozhinan"));
-		BaokaozhinanView baokaozhinanView =  baokaozhinanService.selectView(ew);
-		return R.ok("查询报考指南成功").put("data", baokaozhinanView);
+    public R query(BaokaozhinanEntity baokaozhinan) {
+        QueryWrapper<BaokaozhinanEntity> ew = new QueryWrapper<BaokaozhinanEntity>();
+        ew.allEq(MPUtil.allEQMapPre(baokaozhinan, "baokaozhinan"));
+        BaokaozhinanView baokaozhinanView = baokaozhinanService.selectView(ew);
+        return R.ok("查询报考指南成功").put("data", baokaozhinanView);
     }
 
     /**
      * 后端详情
      */
     @RequestMapping("/info/{id}")
-    public R info(@PathVariable("id") Long id){
+    public R info(@PathVariable("id") Long id) {
         BaokaozhinanEntity baokaozhinan = baokaozhinanService.getById(id);
-		baokaozhinan = baokaozhinanService.selectView(new QueryWrapper<BaokaozhinanEntity>().eq("id", id));
+        baokaozhinan = baokaozhinanService.selectView(new QueryWrapper<BaokaozhinanEntity>().eq("id", id));
         return R.ok().put("data", baokaozhinan);
     }
 
     /**
      * 前端详情
      */
-	@IgnoreAuth
+    @IgnoreAuth
     @RequestMapping("/detail/{id}")
-    public R detail(@PathVariable("id") Long id){
+    public R detail(@PathVariable("id") Long id) {
         BaokaozhinanEntity baokaozhinan = baokaozhinanService.getById(id);
-		baokaozhinan = baokaozhinanService.selectView(new QueryWrapper<BaokaozhinanEntity>().eq("id", id));
+        baokaozhinan = baokaozhinanService.selectView(new QueryWrapper<BaokaozhinanEntity>().eq("id", id));
         return R.ok().put("data", baokaozhinan);
     }
-
 
 
     /**
      * 赞或踩
      */
     @RequestMapping("/thumbsup/{id}")
-    public R vote(@PathVariable("id") String id,String type){
+    public R vote(@PathVariable("id") String id, String type) {
         BaokaozhinanEntity baokaozhinan = baokaozhinanService.getById(id);
-        if(type.equals("1")) {
-        	baokaozhinan.setThumbsupNumber(baokaozhinan.getThumbsupNumber()+1);
+        if (type.equals("1")) {
+            baokaozhinan.setThumbsupNumber(baokaozhinan.getThumbsupNumber() + 1);
         } else {
-        	baokaozhinan.setCrazilyNumber(baokaozhinan.getCrazilyNumber()+1);
+            baokaozhinan.setCrazilyNumber(baokaozhinan.getCrazilyNumber() + 1);
         }
         baokaozhinanService.updateById(baokaozhinan);
         return R.ok("投票成功");
@@ -189,8 +172,8 @@ public class BaokaozhinanController {
      * 后端保存
      */
     @RequestMapping("/save")
-    public R save(@RequestBody BaokaozhinanEntity baokaozhinan, HttpServletRequest request){
-    	//ValidatorUtils.validateEntity(baokaozhinan);
+    public R save(@RequestBody BaokaozhinanEntity baokaozhinan, HttpServletRequest request) {
+        //ValidatorUtils.validateEntity(baokaozhinan);
         baokaozhinanService.save(baokaozhinan);
         return R.ok();
     }
@@ -199,12 +182,11 @@ public class BaokaozhinanController {
      * 前端保存
      */
     @RequestMapping("/add")
-    public R add(@RequestBody BaokaozhinanEntity baokaozhinan, HttpServletRequest request){
-    	//ValidatorUtils.validateEntity(baokaozhinan);
+    public R add(@RequestBody BaokaozhinanEntity baokaozhinan, HttpServletRequest request) {
+        //ValidatorUtils.validateEntity(baokaozhinan);
         baokaozhinanService.save(baokaozhinan);
         return R.ok();
     }
-
 
 
     /**
@@ -212,33 +194,21 @@ public class BaokaozhinanController {
      */
     @RequestMapping("/update")
     @Transactional
-    public R update(@RequestBody BaokaozhinanEntity baokaozhinan, HttpServletRequest request){
+    public R update(@RequestBody BaokaozhinanEntity baokaozhinan, HttpServletRequest request) {
         //ValidatorUtils.validateEntity(baokaozhinan);
         baokaozhinanService.updateById(baokaozhinan);//全部更新
         return R.ok();
     }
 
 
-
-
-
     /**
      * 删除
      */
     @RequestMapping("/delete")
-    public R delete(@RequestBody Long[] ids){
+    public R delete(@RequestBody Long[] ids) {
         baokaozhinanService.removeBatchByIds(Arrays.asList(ids));
         return R.ok();
     }
-
-
-
-
-
-
-
-
-
 
 
 }

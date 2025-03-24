@@ -26,7 +26,7 @@ public interface BaokaozhinanService extends IService<BaokaozhinanEntity> {
    	BaokaozhinanView selectView(@Param("ew") QueryWrapper<BaokaozhinanEntity> wrapper);
    	
    	PageUtils queryPage(Map<String, Object> params,QueryWrapper<BaokaozhinanEntity> wrapper);
-   	
+
 
 }
 

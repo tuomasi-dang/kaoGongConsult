@@ -1,6 +1,7 @@
 package com.cl.service.impl;
 
 import org.springframework.stereotype.Service;
+
 import java.util.Map;
 import java.util.List;
 
@@ -20,37 +21,28 @@ import com.cl.entity.view.BaokaozhinanView;
 public class BaokaozhinanServiceImpl extends ServiceImpl<BaokaozhinanDao, BaokaozhinanEntity> implements BaokaozhinanService {
 
 
-
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
-        Page<BaokaozhinanEntity> page = baseMapper.selectPage(new Query<BaokaozhinanEntity>(params).getPage(),new QueryWrapper<BaokaozhinanEntity>());
+        Page<BaokaozhinanEntity> page = baseMapper.selectPage(new Query<BaokaozhinanEntity>(params).getPage(), new QueryWrapper<BaokaozhinanEntity>());
         return new PageUtils(page);
     }
-    
+
     @Override
-	public PageUtils queryPage(Map<String, Object> params, QueryWrapper<BaokaozhinanEntity> wrapper) {
-		// 1. 创建分页对象
-		Page<BaokaozhinanEntity> page = new Query<BaokaozhinanEntity>(params).getPage();
+    public PageUtils queryPage(Map<String, Object> params, QueryWrapper<BaokaozhinanEntity> wrapper) {
+        Page<BaokaozhinanEntity> page = baseMapper.selectPage(new Query<BaokaozhinanEntity>(params).getPage(), wrapper);
+        Page<BaokaozhinanView> pageVo = (Page<BaokaozhinanView>) page.convert(BaokaozhinanView::new);
+        return new PageUtils(pageVo);
+    }
 
-		// 2. 执行分页查询
-		page = baseMapper.selectPage(page, wrapper);
+    @Override
+    public List<BaokaozhinanView> selectListView(QueryWrapper<BaokaozhinanEntity> wrapper) {
+        return baseMapper.selectListView(wrapper);
+    }
 
-		// 3. 将查询结果转换为视图对象（BaokaozhinanView）
-		Page<BaokaozhinanView> pageVo = (Page<BaokaozhinanView>) page.convert(BaokaozhinanView::new);
-
-		// 4. 返回分页工具类
-		return new PageUtils(pageVo);
- 	}
-    
-	@Override
-	public List<BaokaozhinanView> selectListView(QueryWrapper<BaokaozhinanEntity> wrapper) {
-		return baseMapper.selectListView(wrapper);
-	}
-
-	@Override
-	public BaokaozhinanView selectView(QueryWrapper<BaokaozhinanEntity> wrapper) {
-		return baseMapper.selectView(wrapper);
-	}
+    @Override
+    public BaokaozhinanView selectView(QueryWrapper<BaokaozhinanEntity> wrapper) {
+        return baseMapper.selectView(wrapper);
+    }
 
 
 }
