@@ -74,7 +74,7 @@
               >
                 <template #suffix>
                   <el-icon class="search-clear" @click="handleClear(field.prop)">
-                    <CloseBold />
+                    <CloseBold/>
                   </el-icon>
                 </template>
               </el-input>
@@ -105,7 +105,7 @@
                     class="modern-date"
                 />
                 <el-icon class="date-clear" @click="handleClear(field.prop)">
-                  <CloseBold />
+                  <CloseBold/>
                 </el-icon>
               </div>
 
@@ -119,7 +119,7 @@
                     class="modern-number"
                 />
                 <el-icon class="number-clear" @click="handleClear(field.prop)">
-                  <CloseBold />
+                  <CloseBold/>
                 </el-icon>
               </div>
             </el-form-item>
@@ -129,11 +129,15 @@
         <!-- 操作按钮 -->
         <div class="action-buttons">
           <el-button type="primary" @click="handleSearch" class="search-btn">
-            <el-icon><Search /></el-icon>
+            <el-icon>
+              <Search/>
+            </el-icon>
             搜索
           </el-button>
           <el-button @click="handleReset" class="reset-btn">
-            <el-icon><Refresh /></el-icon>
+            <el-icon>
+              <Refresh/>
+            </el-icon>
             重置条件
           </el-button>
         </div>
@@ -145,7 +149,7 @@
     <div class="card-wrapper">
       <div class="card-container">
         <el-row :gutter="20">
-          <el-col :span="12" v-for="(item,index) in list" :key="index">
+          <el-col :span="12" v-for="(item, index) in list" :key="index">
             <el-card class="position-card" shadow="hover">
               <template #header>
                 <div class="card-header">
@@ -154,54 +158,50 @@
                 </div>
               </template>
 
-              <div class="card-content">
-                <div class="position-info">
+              <!-- 卡片内容区域 -->
+              <div class="card-content" style="display: flex; flex-direction: column; min-height: 200px;">
+                <!-- 上方内容区域 -->
+                <div class="position-info" style="flex: 1; overflow: hidden;">
                   <div>
-                    <el-icon>
-                      <office-building/>
-                    </el-icon>
+                    <el-icon><office-building /></el-icon>
                     职位代码：{{ item.zhiweidaima }}
                   </div>
                   <div>
-                    <el-icon>
-                      <postcard/>
-                    </el-icon>
+                    <el-icon><postcard /></el-icon>
                     职位名称：{{ item.zhiweimingcheng }}
                   </div>
                   <div>
-                    <el-icon>
-                      <reading/>
-                    </el-icon>
+                    <el-icon><reading /></el-icon>
                     学历：{{ item.xueliyaoqiu }}
                   </div>
-                  <div class="professional">
-                    <el-icon>
-                      <tickets/>
-                    </el-icon>
+                  <div class="professional" style="
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              ">
+                    <el-icon><tickets /></el-icon>
                     专业要求：{{ item.zhuanyeyaoqiu || '不限' }}
                   </div>
                 </div>
 
-                <el-divider/>
-
-                <div class="card-footer" style="display: flex; justify-content: space-between; align-items: center;">
-                  <!-- 左侧 查看详情按钮 -->
-                  <el-button type="primary" @click="detailClick(item.id)">查看详情</el-button>
-
-                  <!-- 右侧 咨询电话 -->
-                  <div class="contact" style="display: flex; align-items: center;">
-                    <el-icon style="margin-right: 5px;">
-                      <phone/>
-                    </el-icon>
-                    咨询电话：{{ item.zixundianhua || '暂无' }}
+                <!-- 固定在底部的横线和操作区域 -->
+                <div style="flex-shrink: 0;">
+                  <el-divider style="margin: 20px 0;" />
+                  <div class="card-footer" style="display: flex; justify-content: space-between; align-items: center;">
+                    <el-button type="primary" @click="detailClick(item.id)">查看详情</el-button>
+                    <div class="contact" style="display: flex; align-items: center;">
+                      <el-icon style="margin-right: 5px;"><phone /></el-icon>
+                      咨询电话：{{ item.zixundianhua || '暂无' }}
+                    </div>
                   </div>
                 </div>
-
               </div>
-
             </el-card>
           </el-col>
         </el-row>
+
         <el-pagination
             background
             :layout="layouts.join(',')"
@@ -211,16 +211,16 @@
             prev-text="上一页"
             next-text="下一页"
             :hide-on-single-page="false"
-            :style='{}'
             @size-change="sizeChange"
-            @current-change="currentChange"/>
+            @current-change="currentChange"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { Search, Refresh, CloseBold } from '@element-plus/icons-vue'
+import {Search, Refresh, CloseBold} from '@element-plus/icons-vue'
 
 // 搜索字段配置化
 const searchFields = [
@@ -242,9 +242,9 @@ const searchFields = [
     type: 'select',
     placeholder: '选择学历',
     options: [
-      { label: '大专及以上学历', value: '大专及以上学历' },
-      { label: '本科及以上学历', value: '本科及以上学历' },
-      { label: '硕士及以上学历', value: '硕士及以上学历' }
+      {label: '大专及以上学历', value: '大专及以上学历'},
+      {label: '本科及以上学历', value: '本科及以上学历'},
+      {label: '硕士及以上学历', value: '硕士及以上学历'}
     ]
   },
   {
@@ -259,10 +259,10 @@ const searchFields = [
     type: 'select',
     placeholder: '选择政治面貌',
     options: [
-      { label: '中共党员', value: '中共党员' },
-      { label: '共青团员', value: '共青团员' },
-      { label: '群众', value: '群众' },
-      { label: '不限', value: '不限' }
+      {label: '中共党员', value: '中共党员'},
+      {label: '共青团员', value: '共青团员'},
+      {label: '群众', value: '群众'},
+      {label: '不限', value: '不限'}
     ]
   },
   {
