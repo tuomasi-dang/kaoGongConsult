@@ -27,4 +27,5 @@ public interface KemuDao extends BaseMapper<KemuEntity> {
 	KemuView selectView(@Param("ew") QueryWrapper<KemuEntity> wrapper);
 
 
+    List<String> getZhiWei();
 }

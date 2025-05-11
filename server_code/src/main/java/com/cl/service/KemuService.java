@@ -26,7 +26,8 @@ public interface KemuService extends IService<KemuEntity> {
    	KemuView selectView(@Param("ew") QueryWrapper<KemuEntity> wrapper);
    	
    	PageUtils queryPage(Map<String, Object> params,QueryWrapper<KemuEntity> wrapper);
-   	
 
+
+	List<String> getZhiWei();
 }
 
