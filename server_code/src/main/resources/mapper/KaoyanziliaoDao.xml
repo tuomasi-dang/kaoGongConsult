@@ -4,7 +4,7 @@
 <mapper namespace="com.cl.dao.KaoyanziliaoDao">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="com.cl.entity.KaoyanziliaoEntity" id="kaoyanziliaoMap">
+    <resultMap type="com.cl.entity.KaogongziliaoEntity" id="kaoyanziliaoMap">
         <result property="ziliaomingcheng" column="ziliaomingcheng"/>
         <result property="ziliaofenlei" column="ziliaofenlei"/>
         <result property="fengmian" column="fengmian"/>
@@ -21,21 +21,21 @@
     </resultMap>
 
     <select id="selectListView"
-		resultType="com.cl.entity.view.KaoyanziliaoView" >
+		resultType="com.cl.entity.view.KaogongziliaoView" >
 
-		SELECT  kaoyanziliao.* FROM kaoyanziliao  kaoyanziliao 	        
+		SELECT  kaogongziliao.* FROM kaogongziliao  kaogongziliao
         <where>${ew.sqlSegment}</where>
 	</select>
 	
 	<select id="selectView"
-		resultType="com.cl.entity.view.KaoyanziliaoView" >
-		SELECT * FROM kaoyanziliao  kaoyanziliao <where>${ew.sqlSegment}</where>
+		resultType="com.cl.entity.view.KaogongziliaoView" >
+		SELECT * FROM kaogongziliao  kaogongziliao <where>${ew.sqlSegment}</where>
 	</select>
 
 
 
     <select id="selectValue" resultType="map" >
-        SELECT ${params.xColumn}, ROUND(sum(${params.yColumn}),1) total FROM kaoyanziliao
+        SELECT ${params.xColumn}, ROUND(sum(${params.yColumn}),1) total FROM kaogongziliao
         <where>${ew.sqlSegment}</where>
         group by ${params.xColumn}
         limit 10
@@ -43,24 +43,24 @@
 
     <select id="selectTimeStatValue" resultType="map" >
         <if test = 'params.timeStatType == "日"'>
-                SELECT DATE_FORMAT(${params.xColumn},'%Y-%m-%d') ${params.xColumn}, sum(${params.yColumn}) total FROM kaoyanziliao
+                SELECT DATE_FORMAT(${params.xColumn},'%Y-%m-%d') ${params.xColumn}, sum(${params.yColumn}) total FROM kaogongziliao
                 <where>${ew.sqlSegment}</where>
                 group by DATE_FORMAT(${params.xColumn},'%Y-%m-%d')
         </if>
         <if test = 'params.timeStatType == "月"'>
-                SELECT DATE_FORMAT(${params.xColumn},'%Y-%m') ${params.xColumn}, sum(${params.yColumn}) total FROM kaoyanziliao
+                SELECT DATE_FORMAT(${params.xColumn},'%Y-%m') ${params.xColumn}, sum(${params.yColumn}) total FROM kaogongziliao
                 <where>${ew.sqlSegment}</where>
                 group by DATE_FORMAT(${params.xColumn},'%Y-%m')
         </if>
         <if test = 'params.timeStatType == "年"'>
-                SELECT DATE_FORMAT(${params.xColumn},'%Y') ${params.xColumn}, sum(${params.yColumn}) total FROM kaoyanziliao
+                SELECT DATE_FORMAT(${params.xColumn},'%Y') ${params.xColumn}, sum(${params.yColumn}) total FROM kaogongziliao
                 <where>${ew.sqlSegment}</where>
                 group by DATE_FORMAT(${params.xColumn},'%Y')
         </if>
     </select>
 
     <select id="selectGroup" resultType="map" >
-        SELECT ${params.column} , count(1) total FROM kaoyanziliao
+        SELECT ${params.column} , count(1) total FROM kaogongziliao
         <where>${ew.sqlSegment}</where>
         group by ${params.column}
         limit 10

@@ -33,8 +33,13 @@ public class KemuServiceImpl extends ServiceImpl<KemuDao, KemuEntity> implements
         Page<KemuView> pageVo = (Page<KemuView>)page.convert(KemuView::new);
 	    return new PageUtils(pageVo);
  	}
-    
-	@Override
+
+    @Override
+    public List<String> getZhiWei() {
+        return baseMapper.getZhiWei();
+    }
+
+    @Override
 	public List<KemuView> selectListView(QueryWrapper<KemuEntity> wrapper) {
 		return baseMapper.selectListView(wrapper);
 	}

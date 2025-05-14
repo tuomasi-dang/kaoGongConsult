@@ -4,41 +4,25 @@
 			<el-form class="formModel_form" ref="formRef" :model="form" :rules="rules">
 				<el-row>
 					<el-col :span="12">
-						<el-form-item label="院校" prop="yuanxiao">
-							<el-input class="list_inp" v-model="form.yuanxiao" placeholder="院校"
-								 type="text" 								:readonly="!isAdd||disabledForm.yuanxiao?true:false" />
+						<el-form-item label="部门" prop="fengmian">
+							<el-input class="list_inp" v-model="form.fengmian" placeholder="部门"
+								 type="text" 								:readonly="!isAdd||disabledForm.fengmian?true:false" />
 						</el-form-item>
 					</el-col>
 
 					<el-col :span="12">
-						<el-form-item label="科目" prop="kemu">
+						<el-form-item label="岗位" prop="zhiweimingcheng">
 							<el-select
 								class="list_sel"
-								:disabled="!isAdd||disabledForm.kemu?true:false"
-								v-model="form.kemu" 
-								placeholder="请选择科目"
+								:disabled="!isAdd||disabledForm.zhiweimingcheng?true:false"
+								v-model="form.zhiweimingcheng"
+								placeholder="请选择岗位"
 								>
-								<el-option v-for="(item,index) in kemuLists" :label="item"
+								<el-option v-for="(item,index) in zhiweimingchengLists" :label="item"
 									:value="item"
 									>
 								</el-option>
 							</el-select>
-						</el-form-item>
-					</el-col>
-					<el-col :span="12">
-						<el-form-item prop="fengmian"
-									  label="封面"
-						>
-							<uploads
-								:disabled="!isAdd||disabledForm.fengmian?true:false"
-								action="file/upload"
-
-								tip="请上传封面"
-								:limit="3"
-								style="width: 100%;text-align: left;"
-								:fileUrls="form.fengmian?form.fengmian:''" 
-								@change="fengmianUploadSuccess">
-							</uploads>
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
@@ -136,9 +120,8 @@
 	//form表单
 	const form = ref({})
 	const disabledForm = ref({
-		yuanxiao : false,
-		kemu : false,
 		fengmian : false,
+		zhiweimingcheng : false,
 		baokaotiaojian : false,
 		xuelitiaojian : false,
 		baomingshijian : false,
@@ -226,12 +209,10 @@
 		}
 	}
 	const rules = ref({
-		yuanxiao: [
+		fengmian: [
 			{required: true,message: '请输入',trigger: 'blur'}, 
 		],
-		kemu: [
-		],
-		fengmian: [
+		zhiweimingcheng: [
 		],
 		baokaotiaojian: [
 			{required: true,message: '请输入',trigger: 'blur'}, 
@@ -269,8 +250,8 @@
 	const formRef = ref(null)
 	const id = ref(0)
 	const type = ref('')
-	//科目列表
-	const kemuLists = ref([])
+	//岗位列表
+	const zhiweimingchengLists = ref([])
 	//封面上传回调
 	const fengmianUploadSuccess=(e)=>{
 		form.value.fengmian = e
@@ -283,9 +264,8 @@
 	//重置
 	const resetForm = () => {
 		form.value = {
-			yuanxiao: '',
-			kemu: '',
 			fengmian: '',
+			zhiweimingcheng: '',
 			baokaotiaojian: '',
 			xuelitiaojian: '',
 			baomingshijian: '',
@@ -338,14 +318,14 @@
 			formTitle.value = formNames
 			// getInfo()
 			for(let x in row){
-				if(x=='yuanxiao'){
-					form.value.yuanxiao = row[x];
-					disabledForm.value.yuanxiao = true;
+				if(x=='fengmian'){
+					form.value.fengmian = row[x];
+					disabledForm.value.fengmian = true;
 					continue;
 				}
-				if(x=='kemu'){
-					form.value.kemu = row[x];
-					disabledForm.value.kemu = true;
+				if(x=='zhiweimingcheng'){
+					form.value.zhiweimingcheng = row[x];
+					disabledForm.value.zhiweimingcheng = true;
 					continue;
 				}
 				if(x=='fengmian'){
@@ -434,10 +414,10 @@
 			var json = res.data.data
 		})
 		context?.$http({
-			url: `option/kemu/kemu`,
+			url: `/kemu/zhiweimingcheng`,
 			method: 'get'
 		}).then(res=>{
-			kemuLists.value = res.data.data
+			zhiweimingchengLists.value = res.data.data
 		})
 	}
 	//初始化

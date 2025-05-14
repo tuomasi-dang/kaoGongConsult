@@ -1,11 +1,8 @@
 package com.cl.controller;
 
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,38 +10,28 @@ import java.util.Date;
 import java.util.List;
 import jakarta.servlet.http.HttpServletRequest;
 
-import com.cl.utils.ValidatorUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.cl.annotation.IgnoreAuth;
 import com.cl.entity.OrdersEntity;
 import com.cl.service.OrdersService;
 import com.cl.utils.UserBasedCollaborativeFiltering;
 
-import com.cl.entity.KaoyanziliaoEntity;
-import com.cl.entity.view.KaoyanziliaoView;
+import com.cl.entity.KaogongziliaoEntity;
+import com.cl.entity.view.KaogongziliaoView;
 
 import com.cl.service.KaoyanziliaoService;
-import com.cl.service.TokenService;
 import com.cl.utils.PageUtils;
 import com.cl.utils.R;
 import com.cl.utils.MPUtil;
-import com.cl.utils.MapUtils;
-import com.cl.utils.CommonUtil;
-import java.io.IOException;
 import com.cl.service.StoreupService;
-import com.cl.entity.StoreupEntity;
 
 /**
  * 考公资料
@@ -73,9 +60,9 @@ public class KaoyanziliaoController {
      * 后台列表
      */
     @RequestMapping("/page")
-    public R page(@RequestParam Map<String, Object> params,KaoyanziliaoEntity kaoyanziliao,
-                                                                                                                                                                                                                HttpServletRequest request){
-                                    QueryWrapper<KaoyanziliaoEntity> ew = new QueryWrapper<KaoyanziliaoEntity>();
+    public R page(@RequestParam Map<String, Object> params, KaogongziliaoEntity kaoyanziliao,
+                  HttpServletRequest request){
+                                    QueryWrapper<KaogongziliaoEntity> ew = new QueryWrapper<KaogongziliaoEntity>();
                                                                                                                                                                                                                                                                                                                                     
         
         
@@ -94,9 +81,9 @@ public class KaoyanziliaoController {
      */
 	@IgnoreAuth
     @RequestMapping("/list")
-    public R list(@RequestParam Map<String, Object> params,KaoyanziliaoEntity kaoyanziliao,
-		HttpServletRequest request){
-        QueryWrapper<KaoyanziliaoEntity> ew = new QueryWrapper<KaoyanziliaoEntity>();
+    public R list(@RequestParam Map<String, Object> params, KaogongziliaoEntity kaoyanziliao,
+                  HttpServletRequest request){
+        QueryWrapper<KaogongziliaoEntity> ew = new QueryWrapper<KaogongziliaoEntity>();
 
 		PageUtils page = kaoyanziliaoService.queryPage(params, MPUtil.sort(MPUtil.between(MPUtil.likeOrEq(ew, kaoyanziliao), params), params));
         return R.ok().put("data", page);
@@ -106,8 +93,8 @@ public class KaoyanziliaoController {
      * 列表
      */
     @RequestMapping("/lists")
-    public R list( KaoyanziliaoEntity kaoyanziliao){
-       	QueryWrapper<KaoyanziliaoEntity> ew = new QueryWrapper<KaoyanziliaoEntity>();
+    public R list( KaogongziliaoEntity kaoyanziliao){
+       	QueryWrapper<KaogongziliaoEntity> ew = new QueryWrapper<KaogongziliaoEntity>();
       	ew.allEq(MPUtil.allEQMapPre( kaoyanziliao, "kaoyanziliao"));
         return R.ok().put("data", kaoyanziliaoService.selectListView(ew));
     }
@@ -116,10 +103,10 @@ public class KaoyanziliaoController {
      * 查询
      */
     @RequestMapping("/query")
-    public R query(KaoyanziliaoEntity kaoyanziliao){
-        QueryWrapper< KaoyanziliaoEntity> ew = new QueryWrapper< KaoyanziliaoEntity>();
+    public R query(KaogongziliaoEntity kaoyanziliao){
+        QueryWrapper<KaogongziliaoEntity> ew = new QueryWrapper<KaogongziliaoEntity>();
  		ew.allEq(MPUtil.allEQMapPre( kaoyanziliao, "kaoyanziliao"));
-		KaoyanziliaoView kaoyanziliaoView =  kaoyanziliaoService.selectView(ew);
+		KaogongziliaoView kaoyanziliaoView =  kaoyanziliaoService.selectView(ew);
 		return R.ok("查询考公资料成功").put("data", kaoyanziliaoView);
     }
 
@@ -128,8 +115,8 @@ public class KaoyanziliaoController {
      */
     @RequestMapping("/info/{id}")
     public R info(@PathVariable("id") Long id){
-        KaoyanziliaoEntity kaoyanziliao = kaoyanziliaoService.getById(id);
-		kaoyanziliao = kaoyanziliaoService.selectView(new QueryWrapper<KaoyanziliaoEntity>().eq("id", id));
+        KaogongziliaoEntity kaoyanziliao = kaoyanziliaoService.getById(id);
+		kaoyanziliao = kaoyanziliaoService.selectView(new QueryWrapper<KaogongziliaoEntity>().eq("id", id));
         return R.ok().put("data", kaoyanziliao);
     }
 
@@ -139,8 +126,8 @@ public class KaoyanziliaoController {
 	@IgnoreAuth
     @RequestMapping("/detail/{id}")
     public R detail(@PathVariable("id") Long id){
-        KaoyanziliaoEntity kaoyanziliao = kaoyanziliaoService.getById(id);
-		kaoyanziliao = kaoyanziliaoService.selectView(new QueryWrapper<KaoyanziliaoEntity>().eq("id", id));
+        KaogongziliaoEntity kaoyanziliao = kaoyanziliaoService.getById(id);
+		kaoyanziliao = kaoyanziliaoService.selectView(new QueryWrapper<KaogongziliaoEntity>().eq("id", id));
         return R.ok().put("data", kaoyanziliao);
     }
 
@@ -151,7 +138,7 @@ public class KaoyanziliaoController {
      */
     @RequestMapping("/thumbsup/{id}")
     public R vote(@PathVariable("id") String id,String type){
-        KaoyanziliaoEntity kaoyanziliao = kaoyanziliaoService.getById(id);
+        KaogongziliaoEntity kaoyanziliao = kaoyanziliaoService.getById(id);
         if(type.equals("1")) {
         	kaoyanziliao.setThumbsupNumber(kaoyanziliao.getThumbsupNumber()+1);
         } else {
@@ -165,7 +152,7 @@ public class KaoyanziliaoController {
      * 后端保存
      */
     @RequestMapping("/save")
-    public R save(@RequestBody KaoyanziliaoEntity kaoyanziliao, HttpServletRequest request){
+    public R save(@RequestBody KaogongziliaoEntity kaoyanziliao, HttpServletRequest request){
     	//ValidatorUtils.validateEntity(kaoyanziliao);
         kaoyanziliaoService.save(kaoyanziliao);
         return R.ok();
@@ -175,7 +162,7 @@ public class KaoyanziliaoController {
      * 前端保存
      */
     @RequestMapping("/add")
-    public R add(@RequestBody KaoyanziliaoEntity kaoyanziliao, HttpServletRequest request){
+    public R add(@RequestBody KaogongziliaoEntity kaoyanziliao, HttpServletRequest request){
     	//ValidatorUtils.validateEntity(kaoyanziliao);
         kaoyanziliaoService.save(kaoyanziliao);
         return R.ok();
@@ -188,7 +175,7 @@ public class KaoyanziliaoController {
      */
     @RequestMapping("/update")
     @Transactional
-    public R update(@RequestBody KaoyanziliaoEntity kaoyanziliao, HttpServletRequest request){
+    public R update(@RequestBody KaogongziliaoEntity kaoyanziliao, HttpServletRequest request){
         //ValidatorUtils.validateEntity(kaoyanziliao);
         kaoyanziliaoService.updateById(kaoyanziliao);//全部更新
         return R.ok();
@@ -213,8 +200,8 @@ public class KaoyanziliaoController {
      */
 	@IgnoreAuth
     @RequestMapping("/autoSort")
-    public R autoSort(@RequestParam Map<String, Object> params,KaoyanziliaoEntity kaoyanziliao, HttpServletRequest request,String pre){
-        QueryWrapper<KaoyanziliaoEntity> ew = new QueryWrapper<KaoyanziliaoEntity>();
+    public R autoSort(@RequestParam Map<String, Object> params, KaogongziliaoEntity kaoyanziliao, HttpServletRequest request, String pre){
+        QueryWrapper<KaogongziliaoEntity> ew = new QueryWrapper<KaogongziliaoEntity>();
         Map<String, Object> newMap = new HashMap<String, Object>();
         Map<String, Object> param = new HashMap<String, Object>();
 		Iterator<Map.Entry<String, Object>> it = param.entrySet().iterator();
@@ -240,7 +227,7 @@ public class KaoyanziliaoController {
      * 协同算法（基于用户的协同算法）
      */
     @RequestMapping("/autoSort2")
-    public R autoSort2(@RequestParam Map<String, Object> params,KaoyanziliaoEntity kaoyanziliao, HttpServletRequest request){
+    public R autoSort2(@RequestParam Map<String, Object> params, KaogongziliaoEntity kaoyanziliao, HttpServletRequest request){
         String userId = request.getSession().getAttribute("userId").toString();
         Integer limit = params.get("limit")==null?10:Integer.parseInt(params.get("limit").toString());
         List<OrdersEntity> orders = ordersService.list(new QueryWrapper<OrdersEntity>());
@@ -276,17 +263,17 @@ public class KaoyanziliaoController {
             System.out.println(item);
         }
 
-        QueryWrapper<KaoyanziliaoEntity> ew = new QueryWrapper<KaoyanziliaoEntity>();
+        QueryWrapper<KaogongziliaoEntity> ew = new QueryWrapper<KaogongziliaoEntity>();
         if(recommendations!=null && recommendations.size()>0) {
             ew.in("id", recommendations);
             ew.last("order by FIELD(id, "+String.join(",", recommendations)+")");
         }
 
         PageUtils page = kaoyanziliaoService.queryPage(params, ew);
-        List<KaoyanziliaoEntity> pageList = (List<KaoyanziliaoEntity>)page.getList();
+        List<KaogongziliaoEntity> pageList = (List<KaogongziliaoEntity>)page.getList();
         if(pageList.size()<limit) {
             int toAddNum = limit-pageList.size();
-            ew = new QueryWrapper<KaoyanziliaoEntity>();
+            ew = new QueryWrapper<KaogongziliaoEntity>();
             if(recommendations.size()>0){
                 ew.notIn("id", recommendations);
             }
@@ -312,7 +299,7 @@ public class KaoyanziliaoController {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("xColumn", MPUtil.camelToSnake(xColumnName));
         params.put("yColumn", MPUtil.camelToSnake(yColumnName));
-        QueryWrapper<KaoyanziliaoEntity> ew = new QueryWrapper<KaoyanziliaoEntity>();
+        QueryWrapper<KaogongziliaoEntity> ew = new QueryWrapper<KaogongziliaoEntity>();
         List<Map<String, Object>> result = kaoyanziliaoService.selectValue(params, ew);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         for(Map<String, Object> m : result) {
@@ -335,7 +322,7 @@ public class KaoyanziliaoController {
         params.put("xColumn", MPUtil.camelToSnake(xColumnName));
         List<List<Map<String, Object>>> result2 = new ArrayList<List<Map<String,Object>>>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        QueryWrapper<KaoyanziliaoEntity> ew = new QueryWrapper<KaoyanziliaoEntity>();
+        QueryWrapper<KaogongziliaoEntity> ew = new QueryWrapper<KaogongziliaoEntity>();
         for(int i=0;i<yColumnNames.length;i++) {
             params.put("yColumn", yColumnNames[i]);
             List<Map<String, Object>> result = kaoyanziliaoService.selectValue(params, ew);
@@ -360,7 +347,7 @@ public class KaoyanziliaoController {
         params.put("xColumn", MPUtil.camelToSnake(xColumnName));
         params.put("yColumn", MPUtil.camelToSnake(yColumnName));
         params.put("timeStatType", timeStatType);
-        QueryWrapper<KaoyanziliaoEntity> ew = new QueryWrapper<KaoyanziliaoEntity>();
+        QueryWrapper<KaogongziliaoEntity> ew = new QueryWrapper<KaogongziliaoEntity>();
         List<Map<String, Object>> result = kaoyanziliaoService.selectTimeStatValue(params, ew);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         for(Map<String, Object> m : result) {
@@ -384,7 +371,7 @@ public class KaoyanziliaoController {
         params.put("timeStatType", timeStatType);
         List<List<Map<String, Object>>> result2 = new ArrayList<List<Map<String,Object>>>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        QueryWrapper<KaoyanziliaoEntity> ew = new QueryWrapper<KaoyanziliaoEntity>();
+        QueryWrapper<KaogongziliaoEntity> ew = new QueryWrapper<KaogongziliaoEntity>();
         for(int i=0;i<yColumnNames.length;i++) {
             params.put("yColumn", yColumnNames[i]);
             List<Map<String, Object>> result = kaoyanziliaoService.selectTimeStatValue(params, ew);
@@ -407,7 +394,7 @@ public class KaoyanziliaoController {
     public R group(@PathVariable("columnName") String columnName,HttpServletRequest request) {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("column", MPUtil.camelToSnake(columnName));
-        QueryWrapper<KaoyanziliaoEntity> ew = new QueryWrapper<KaoyanziliaoEntity>();
+        QueryWrapper<KaogongziliaoEntity> ew = new QueryWrapper<KaogongziliaoEntity>();
         List<Map<String, Object>> result = kaoyanziliaoService.selectGroup(params, ew);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         for(Map<String, Object> m : result) {
@@ -427,8 +414,8 @@ public class KaoyanziliaoController {
      * 总数量
      */
     @RequestMapping("/count")
-    public R count(@RequestParam Map<String, Object> params,KaoyanziliaoEntity kaoyanziliao, HttpServletRequest request){
-        QueryWrapper<KaoyanziliaoEntity> ew = new QueryWrapper<KaoyanziliaoEntity>();
+    public R count(@RequestParam Map<String, Object> params, KaogongziliaoEntity kaoyanziliao, HttpServletRequest request){
+        QueryWrapper<KaogongziliaoEntity> ew = new QueryWrapper<KaogongziliaoEntity>();
     long count = kaoyanziliaoService.count(MPUtil.sort(MPUtil.between(MPUtil.likeOrEq(ew, kaoyanziliao), params), params));
         return R.ok().put("data", count);
     }

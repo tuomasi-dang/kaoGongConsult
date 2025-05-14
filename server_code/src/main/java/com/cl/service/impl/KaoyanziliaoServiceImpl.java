@@ -12,50 +12,50 @@ import com.cl.utils.Query;
 
 
 import com.cl.dao.KaoyanziliaoDao;
-import com.cl.entity.KaoyanziliaoEntity;
+import com.cl.entity.KaogongziliaoEntity;
 import com.cl.service.KaoyanziliaoService;
-import com.cl.entity.view.KaoyanziliaoView;
+import com.cl.entity.view.KaogongziliaoView;
 
 @Service("kaoyanziliaoService")
-public class KaoyanziliaoServiceImpl extends ServiceImpl<KaoyanziliaoDao, KaoyanziliaoEntity> implements KaoyanziliaoService {
+public class KaoyanziliaoServiceImpl extends ServiceImpl<KaoyanziliaoDao, KaogongziliaoEntity> implements KaoyanziliaoService {
 
 
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
-        Page<KaoyanziliaoEntity> page = baseMapper.selectPage(new Query<KaoyanziliaoEntity>(params).getPage(),new QueryWrapper<KaoyanziliaoEntity>());
+        Page<KaogongziliaoEntity> page = baseMapper.selectPage(new Query<KaogongziliaoEntity>(params).getPage(),new QueryWrapper<KaogongziliaoEntity>());
         return new PageUtils(page);
     }
     
     @Override
-	public PageUtils queryPage(Map<String, Object> params, QueryWrapper<KaoyanziliaoEntity> wrapper) {
-        Page<KaoyanziliaoEntity> page = baseMapper.selectPage(new Query<KaoyanziliaoEntity>(params).getPage(),wrapper);
-        Page<KaoyanziliaoView> pageVo = (Page<KaoyanziliaoView>)page.convert(KaoyanziliaoView::new);
+	public PageUtils queryPage(Map<String, Object> params, QueryWrapper<KaogongziliaoEntity> wrapper) {
+        Page<KaogongziliaoEntity> page = baseMapper.selectPage(new Query<KaogongziliaoEntity>(params).getPage(),wrapper);
+        Page<KaogongziliaoView> pageVo = (Page<KaogongziliaoView>)page.convert(KaogongziliaoView::new);
 	    return new PageUtils(pageVo);
  	}
     
 	@Override
-	public List<KaoyanziliaoView> selectListView(QueryWrapper<KaoyanziliaoEntity> wrapper) {
+	public List<KaogongziliaoView> selectListView(QueryWrapper<KaogongziliaoEntity> wrapper) {
 		return baseMapper.selectListView(wrapper);
 	}
 
 	@Override
-	public KaoyanziliaoView selectView(QueryWrapper<KaoyanziliaoEntity> wrapper) {
+	public KaogongziliaoView selectView(QueryWrapper<KaogongziliaoEntity> wrapper) {
 		return baseMapper.selectView(wrapper);
 	}
 
     @Override
-    public List<Map<String, Object>> selectValue(Map<String, Object> params, QueryWrapper<KaoyanziliaoEntity> wrapper) {
+    public List<Map<String, Object>> selectValue(Map<String, Object> params, QueryWrapper<KaogongziliaoEntity> wrapper) {
         return baseMapper.selectValue(params, wrapper);
     }
 
     @Override
-    public List<Map<String, Object>> selectTimeStatValue(Map<String, Object> params, QueryWrapper<KaoyanziliaoEntity> wrapper) {
+    public List<Map<String, Object>> selectTimeStatValue(Map<String, Object> params, QueryWrapper<KaogongziliaoEntity> wrapper) {
         return baseMapper.selectTimeStatValue(params, wrapper);
     }
 
     @Override
-    public List<Map<String, Object>> selectGroup(Map<String, Object> params, QueryWrapper<KaoyanziliaoEntity> wrapper) {
+    public List<Map<String, Object>> selectGroup(Map<String, Object> params, QueryWrapper<KaogongziliaoEntity> wrapper) {
         return baseMapper.selectGroup(params, wrapper);
     }
 

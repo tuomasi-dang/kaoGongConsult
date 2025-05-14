@@ -19,7 +19,9 @@
 		resultType="com.cl.entity.view.KemuView" >
 		SELECT * FROM kemu  kemu <where>${ew.sqlSegment}</where>
 	</select>
-
+    <select id="getZhiWei" resultType="java.lang.String">
+		select distinct zhiweimingcheng from baokaozhinan limit 100
+	</select>
 
 
 </mapper>

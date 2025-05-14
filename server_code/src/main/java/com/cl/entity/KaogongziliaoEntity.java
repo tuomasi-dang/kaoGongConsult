@@ -1,15 +1,9 @@
 package com.cl.entity;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.lang.reflect.InvocationTargetException;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -17,7 +11,6 @@ import org.apache.commons.beanutils.BeanUtils;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.TableField;
 
 
 /**
@@ -27,16 +20,16 @@ import com.baomidou.mybatisplus.annotation.TableField;
  * @email 
  * @date 2024-12-31 14:57:50
  */
-@TableName("kaoyanziliao")
-public class KaoyanziliaoEntity<T> implements Serializable {
+@TableName("kaogongziliao")
+public class KaogongziliaoEntity<T> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 
-	public KaoyanziliaoEntity() {
+	public KaogongziliaoEntity() {
 		
 	}
 	
-	public KaoyanziliaoEntity(T t) {
+	public KaogongziliaoEntity(T t) {
 		try {
 			BeanUtils.copyProperties(this, t);
 		} catch (IllegalAccessException | InvocationTargetException e) {

@@ -1,15 +1,13 @@
 package com.cl.entity.view;
 
-import com.cl.entity.KaoyanziliaoEntity;
+import com.cl.entity.KaogongziliaoEntity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import org.apache.commons.beanutils.BeanUtils;
 import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
 
 import java.io.Serializable;
-import com.cl.utils.EncryptUtil;
- 
+
 
 /**
  * 考公资料
@@ -20,13 +18,13 @@ import com.cl.utils.EncryptUtil;
  * @date 2024-12-31 14:57:50
  */
 @TableName("kaoyanziliao")
-public class KaoyanziliaoView  extends KaoyanziliaoEntity implements Serializable {
+public class KaogongziliaoView extends KaogongziliaoEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	public KaoyanziliaoView(){
+	public KaogongziliaoView(){
 	}
  
- 	public KaoyanziliaoView(KaoyanziliaoEntity kaoyanziliaoEntity){
+ 	public KaogongziliaoView(KaogongziliaoEntity kaoyanziliaoEntity){
  	try {
 			BeanUtils.copyProperties(this, kaoyanziliaoEntity);
 		} catch (IllegalAccessException | InvocationTargetException e) {
