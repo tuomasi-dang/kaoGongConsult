@@ -97,7 +97,14 @@
         </div>
         <div class="info_item">
           <div class="info_label">报名网址</div>
-          <div class="info_link" @click="linkOthers(detail.baomingwangzhi)" >{{detail.baomingwangzhi}}</div>
+          <a
+              href="http://bm.scs.gov.cn/pp/gkweb/core/web/ui/business/home/gkhome.html"
+              target="_blank"
+              class="info_link"
+              style="color: #409EFF; text-decoration: underline; cursor: pointer;"
+          >
+            http://bm.scs.gov.cn
+          </a>
         </div>
         <div class="info_item">
           <div class="info_label">费用缴纳</div>
