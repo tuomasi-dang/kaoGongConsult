@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,11 +30,16 @@ public class DeepSeekServiceImpl implements DeepSeekService {
 
     public ChatMessage getChatResponse(DeepSeekRequest deepSeekRequest) {
         // 初始化 OkHttpClient
-        OkHttpClient client = new OkHttpClient().newBuilder().build();
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(true)
+                .build();
 
         // 构建请求体
         MediaType mediaType = MediaType.parse("application/json");
-        String jsonBody = buildRequestBody(deepSeekRequest.getAsk()); // 动态构建请求体
+        String jsonBody = buildRequestBody(deepSeekRequest.getAsk().trim()); // 动态构建请求体
         RequestBody requestBody = RequestBody.create(jsonBody, mediaType);
 
         // 打印请求体内容（调试用）
